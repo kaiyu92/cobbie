@@ -19,12 +19,14 @@ module.exports = {
       },
       {
           test: /\.(jpe?g|png|gif|svg)$/i,
-          loaders: [
-            'file-loader'
-          ],
-          // options: {
-          //   name: '[path][name].[hash].[ext]'
-          // }
+          use:[{
+              loader: 'file-loader',
+              // options: {
+              //   query: {
+              //     name:'assets/[name].[ext]'
+              //   }
+              // }           
+          }]
       }
     ]
   },
