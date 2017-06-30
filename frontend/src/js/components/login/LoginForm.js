@@ -1,117 +1,78 @@
 import React from 'react';
-import TextFieldGroup from '../TextFieldGroup';
-import validateInput from './validateInput';
+import { reduxForm } from 'redux-form';
+import { push } from 'react-router-redux';
+import RaisedButton from 'material-ui/RaisedButton';
+import { TextFormField, PasswordFormField} from '../field/TextFieldComponents'
 
-import { connect } from 'react-redux';
+
 import { attemptLogin } from '../../actions/authActions';
 
+
+const validate = values => {
+	const errors = {};
+	const requiredFields = ['identifier', 'password'];
+
+	requiredFields.forEach(field => {
+		if(!values[field]) {
+			errors[field] = 'Required'
+		}
+	});
+	return errors;
+}
+
 class LoginForm extends React.Component {
-	constructor(props) {
-		super(props);
-		this.state = {
-			identifier:'',
-			password:'',
-			errors:{},
-			isLoading: false
-		};
-		this.onSubmit = this.onSubmit.bind(this);
-		this.onChange = this.onChange.bind(this);
-	}
 
-	verifyLoginStatus() {
+	componentDidUpdate() {
+
 		const { isLoggedIn, isAuthenticated } = this.props;
-		//console.log(isLoggedIn);
+
 		if(isLoggedIn && isAuthenticated)
-			this.context.router.history.push('/dashboard');
+			this.props.dispatch(push('/dashboard'));
 	}
 
-	isValid() {
-		const { errors, isValid } = validateInput(this.state);
-
-		if(!isValid) {
-			this.setState({ errors });
-		}
-
-		return isValid;
-	}
-
-	onSubmit(e) {
-		e.preventDefault();
-		if(this.isValid()) {
-			this.setState({ errors: {}, isLoading: true });
-			this.props.attemptLogin(this.state);
-			this.verifyLoginStatus();
-		}
-	}
-
-	onChange(e) {
-		this.setState( { [e.target.name]: e.target.value });
+	submitForm(val){
+		this.props.attemptLogin(val);
 	}
 
 	render() {
-		const { errors, identifier, password, isLoading } = this.state;
+		const { handleSubmit, loginError } = this.props;
+		console.log(loginError);
+		return(
+			<div>
+				<form onSubmit={ handleSubmit((values) => {
+					this.submitForm(values)
+				})}>
+				<div>
+					<TextFormField 
+						name="identifier"
+						floatingLabelText="Username"/>
+				</div>
+				<div>
+					<PasswordFormField
+						name="password"
+						floatingLabelText="Password"/>
+				</div>
+				<div>
+					<RaisedButton class="RaisedButton"
+								label="Login"
+								primary type="submit"
+								style={{ width: '100%' }}/>
+				</div>
+				</form>
+				{
+					loginError.length > 0 &&
+						<h4 style={{ color: '#F86E60' }}> { loginError } </h4>
 
-		return (
-	      <form onSubmit={this.onSubmit}>
-	        <h3>Please sign in</h3>
-
-	        
-
-	        <TextFieldGroup
-	          field="identifier"
-	          label="Username"
-	          value={identifier}
-	          error={errors.identifier}
-	          onChange={this.onChange}
-	        />
-
-	        <TextFieldGroup
-	          field="password"
-	          label="Password"
-	          value={password}
-	          error={errors.password}
-	          onChange={this.onChange}
-	          type="password"
-	        />
-
-	        <div className="form-group"><button className="btn btn-primary btn-lg" disabled={isLoading}>Login</button></div>
-	      </form>
+				}
+			</div>
 		);
 	}
-
-
-	// render() {
-	// 	return(
-	//       <form onSubmit={this.onSubmit}>
-	//         <h3>Please sign in</h3>
-
-
-	//         <div className="form-group"><button className="btn btn-primary btn-lg">Login</button></div>
-	//       </form>			
-	// 	);
-	// }
 }
 
-// LoginForm.propTypes = {
-// 	attemptLogin: React.PropTypes.func.isRequired
-// }
+// Decorate with redux-form
+export default reduxForm({
+	form: 'LoginForm',
+	validate
+})(LoginForm)
 
-// LoginForm.contextTypes = {
-// 	router: React.PropTypes.object.isRequired
-// }
 
-//redux
-const mapStateToProps = (state) => {
-	return {
-		isAuthenticated: state.user.isAuthenticated,
-		isLoggedIn: state.user.isLoggedIn
-	};
-};
-
-const mapDispatchToProps = (dispatch) => ({
-	attemptLogin(data) {
-		dispatch(attemptLogin(data));
-	}
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(LoginForm);
