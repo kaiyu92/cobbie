@@ -1,8 +1,8 @@
 import React from 'react';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import { fetchUser } from '../actions/userActions';
 
-import Navbar from "./Navbar";
+import Navbar from './Navbar';
+import Footer from './Footer';
 
 export default class Layout extends React.Component {
 
@@ -18,7 +18,7 @@ export default class Layout extends React.Component {
 						<div style={containerStyle}>
 							{this.props.children}
 						</div>
-					
+					<Footer/>
 				</div>
 			</MuiThemeProvider>
 		);

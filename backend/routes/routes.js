@@ -101,7 +101,6 @@ router.route('/addProject').post(function(req, res){
 	var newProject = new Project();
 
 	//Set the Project attributes
-	newProject._id = req.body._id;
 	newProject.title = req.body.title;
 	newProject.desc = req.body.desc;
 	newProject.deadline = req.body.deadline;
@@ -118,6 +117,15 @@ router.route('/addProject').post(function(req, res){
 //GET all projects (using GET at http://localhost:3001/projects)
 router.route('/projects').get(function(req, res) {
 	Project.find(function(err, projects) {
+		if(err)
+			res.send(err);
+		res.json(projects);
+	});
+});
+
+//GET all projects that the user is working on (using GET at http://localhost:3001/projects/:user)
+router.route('/projects/:user').get(function(req, res) {
+	Project.find({users: {$elemMatch:{$eq:req.params.user}}}, function(err, projects) {
 		if(err)
 			res.send(err);
 		res.json(projects);

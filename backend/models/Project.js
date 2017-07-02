@@ -2,7 +2,6 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var ProjectSchema = new Schema({
-	_id: Number,
 	title: String,
 	desc: String,
 	startDate: { type: Date, default: Date.now },
