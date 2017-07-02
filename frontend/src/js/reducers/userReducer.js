@@ -1,5 +1,4 @@
 import { Login_Success, Login_Fail } from '../actions/authActions';
-import { FETCH_USER_FULFILLED } from '../actions/userActions';
 
 const initialState = {
 	isAuthenticated: false,
@@ -17,7 +16,7 @@ const initialState = {
 export default function userReducer(state=initialState, action) {
 	switch(action.type) {
 		//Login attempt
-		case Login_Success: console.log(action.payload);
+		case Login_Success:
 			return Object.assign({}, state, { 
 				isAuthenticated: true,
 				isLoggedIn: true,

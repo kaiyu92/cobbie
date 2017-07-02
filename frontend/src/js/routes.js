@@ -9,6 +9,7 @@ import configureStore from './store'
 import { loadState } from './util/localStorage';
 
 import Layout from './components/Layout';
+import PrivateRoute from './components/PrivateRoute';
 import Home from './pages/Home';
 import About from './pages/About';
 import Login from './pages/Login';
@@ -22,10 +23,13 @@ const history = createHistory();
 //Build the middleware for intercepting and dispatching navigation actions
 const middleware = routerMiddleware(history);
 
-const store = configureStore(persistedState, middleware)
+const store = configureStore(persistedState, middleware);
 
+//<Route path="/dashboard" component={Dashboard}/>
 export default class routes extends React.Component {
+
 	render() {
+		console.log(store.getState());
 		return(
 			<Provider store={ store }>
 			  { /*ConnectedRouter will use the store from Provider automatically */ }
@@ -35,7 +39,7 @@ export default class routes extends React.Component {
 				      <Route exact path="/" component={Home}/>
 				      <Route path="/about" component={About}/>
 				      <Route path="/login" component={Login}/>
-				      <Route path="/dashboard" component={Dashboard}/>
+				      <PrivateRoute path="/dashboard" component={Dashboard}/>
 				    </Switch>
 			    </Layout>
 			  </ConnectedRouter>
