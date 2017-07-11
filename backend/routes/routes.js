@@ -105,12 +105,21 @@ router.route('/addProject').post(function(req, res){
 	newProject.desc = req.body.desc;
 	newProject.deadline = req.body.deadline;
 	newProject.users = req.body.users; //must a string array
-	//newProject.nodes = req.body.nodes;
+	// newProject.nodes = req.body.nodes; //must be a node array
 
-	newProject.save(function(err) {
+	newProject.save(function(err, result) {
 		if(err)
-			res.send(err);
-		res.json({ newProject: 'Successfully created new project'})
+			res.json({
+				status: 'fail',
+				message: 'Sorry, unable to add new project'
+			})
+			//res.send(err);
+		else
+			res.json({ 
+				status: 'success',
+				message: 'Successfully added a new project',
+				id: result._id
+			})
 	});
 });
 
@@ -153,8 +162,16 @@ router.route('/addUserProject/:project_id').put(function(req, res) {
 							{ $push: { users: req.body.user }},
 							{ new: true }, function(err, project) {
 								if(err)
-									res.send(err);
-								res.json({ project: 'Successfully added a new user to the project!'});
+									res.json({
+										status: 'fail',
+										message: 'Sorry, unable to add user to this project'
+									})
+									//res.send(err);
+								else
+									res.json({ 
+										status: 'success',
+										message: 'Successfully added this user to this project'
+									})
 							})
 });
 
@@ -165,8 +182,16 @@ router.route('/addNodeProject/:project_id').put(function(req, res) {
 							{ $push: { nodes: req.body.node_id }},
 							{ new: true }, function(err, project) {
 								if(err)
-									res.send(err);
-								res.json({ project: 'Successfully added a new node to the project!'});
+									res.json({
+										status: 'fail',
+										message: 'Sorry, unable to add this node to this project'
+									})
+									//res.send(err);
+								else
+									res.json({ 
+										status: 'success',
+										message: 'Successfully added this node to this project'
+									})
 							})
 });
 
@@ -185,10 +210,19 @@ router.route('/addNode').post(function(req, res){
 	newNode.previousNode = req.body.previousNode; 
 	newNode.project_id = req.body.project_id; 
 
-	newNode.save(function(err) {
+	newNode.save(function(err, result) {
 		if(err)
-			res.send(err);
-		res.json({ newNode: 'Successfully created a new node!'})
+			res.json({
+				status: 'fail',
+				message: 'Sorry, unable to add new node'
+			})
+			//res.send(err);
+		else
+			res.json({ 
+				status: 'success',
+				message: 'Successfully created a new node',
+				id: result._id
+			})
 	});
 });
 

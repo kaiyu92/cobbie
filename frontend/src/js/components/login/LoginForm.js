@@ -2,7 +2,7 @@ import React from 'react';
 import { reduxForm } from 'redux-form';
 import { push } from 'react-router-redux';
 import RaisedButton from 'material-ui/RaisedButton';
-import { TextFormField, PasswordFormField} from '../field/TextFieldComponents'
+import { TextFormField, PasswordFormField} from '../field/TextFieldComponents';
 
 
 import { attemptLogin } from '../../actions/authActions';
@@ -36,7 +36,7 @@ class LoginForm extends React.Component {
 
 	render() {
 		const { handleSubmit, loginError } = this.props;
-		console.log(loginError);
+
 		return(
 			<div>
 				<form onSubmit={ handleSubmit((values) => {

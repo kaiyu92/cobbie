@@ -10,10 +10,12 @@ import { loadState } from './util/localStorage';
 
 import Layout from './components/Layout';
 import PrivateRoute from './components/PrivateRoute';
+
 import Home from './pages/Home';
 import About from './pages/About';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
+import AddProject from './pages/project/AddProject';
 
 const persistedState = loadState();
 
@@ -25,7 +27,14 @@ const middleware = routerMiddleware(history);
 
 const store = configureStore(persistedState, middleware);
 
-//<Route path="/dashboard" component={Dashboard}/>
+//Dashboard routes
+const DashboardRoutes = () => (
+	<Switch>
+		<Route exact path='/dashboard' component={Dashboard}/>
+		<Route path='/dashboard/:project_id' component={Dashboard}/>
+	</Switch>
+)
+
 export default class routes extends React.Component {
 
 	render() {
@@ -39,7 +48,8 @@ export default class routes extends React.Component {
 				      <Route exact path="/" component={Home}/>
 				      <Route path="/about" component={About}/>
 				      <Route path="/login" component={Login}/>
-				      <PrivateRoute path="/dashboard" component={Dashboard}/>
+				      <PrivateRoute path="/dashboard" component={DashboardRoutes}/>
+				      <PrivateRoute path='/addproject' component={AddProject}/>
 				    </Switch>
 			    </Layout>
 			  </ConnectedRouter>

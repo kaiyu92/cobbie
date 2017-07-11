@@ -40,7 +40,6 @@
     "redux-form-material-ui": "^4.2.0",
     "redux-thunk": "^2.2.0",
     "superagent": "^3.5.2",
-    "url-loader": "^0.5.9",
     "validator": "^7.1.0",
     "webpack": "^3.0.0",
     "webpack-dev-server": "^2.5.0"
