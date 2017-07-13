@@ -8,7 +8,7 @@ var NodeSchema = new Schema({
 	created_by: String,
 	primaryNode: Number,
 	previousNode: { type: Schema.Types.ObjectId, ref: 'Node' },
-	project_id: { type: Number, ref: 'Project'}
+	project_id: { type: Schema.Types.ObjectId, ref: 'Project'}
 });
 
 module.exports = mongoose.model('Node', NodeSchema);

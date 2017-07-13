@@ -3,16 +3,21 @@ import thunk from 'redux-thunk';
 import throttle from 'lodash/throttle';
 
 import rootReducer from './reducers/rootReducer';
-import { loadState, saveState } from './util/localStorage';
+import { saveState } from './util/localStorage';
 
-const persistedState = loadState();
+export default function configureStore(initialState, history) {
+	const middewares = [thunk, history];
 
-const store = createStore(rootReducer, persistedState, applyMiddleware(thunk));
-
-store.subscribe(throttle(() => {
+	const store = createStore(rootReducer, initialState, applyMiddleware(...middewares));
+	store.subscribe(throttle(() => {
 	saveState({
 		userObject: store.getState().userObject
 	});
-}, 1000));
+	}, 1000));
+	return store;
+}
 
-export default store;
+
+
+
+

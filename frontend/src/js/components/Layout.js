@@ -1,8 +1,8 @@
-import React from "react";
+import React from 'react';
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
-import { fetchUser } from '../actions/userActions'
-
-import Navbar from "./Navbar";
+import Navbar from './Navbar';
+import Footer from './Footer';
 
 export default class Layout extends React.Component {
 
@@ -11,14 +11,16 @@ export default class Layout extends React.Component {
 			  padding: '80px 15px',
 		}
 		return (
-			<div>
-				<Navbar/>
-							
-					<div style={containerStyle}>
-						{this.props.children}
-					</div>
-				
-			</div>
+			<MuiThemeProvider>
+				<div>
+					<Navbar/>
+								
+						<div style={containerStyle}>
+							{this.props.children}
+						</div>
+					<Footer/>
+				</div>
+			</MuiThemeProvider>
 		);
 	}
 }

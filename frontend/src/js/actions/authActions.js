@@ -6,7 +6,7 @@ export const Login_Success = 'Login_Success';
 export const Login_Fail = 'Login_Fail'
 
 
-// Login attemp
+// Login attempt
 export function loginSuccess(userObject) {
 	return { type: Login_Success, payload: userObject }
 }
@@ -29,15 +29,5 @@ export function attemptLogin(data) {
 					dispatch(loginFail(res.body.message));
 				}
 			})
-	}
-}
-export function login(data) {
-	return dispatch => {
-		return Request
-				.post(ROOT_URL + '/login')
-				.send(data);
-				// .end(function(err,res){
-				// 	console.log(res.body);
-				// });
 	}
 }

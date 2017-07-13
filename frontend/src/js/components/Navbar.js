@@ -1,9 +1,11 @@
 import React from "react";
 import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
 
-
-export default class Navbar extends React.Component{
+class Navbar extends React.Component{
 	render() {
+		const { isLoggedIn, username } = this.props;
+
 		return (
 		    <nav class="navbar navbar-default navbar-fixed-top">
 		      <div class="container">
@@ -21,11 +23,20 @@ export default class Navbar extends React.Component{
 		            <li><Link to="/">Home</Link></li>
 		            <li><Link to="/about">About</Link></li>
 		            <li><Link to="/dashboard">Dashboard</Link></li>
-		          </ul>
-		          <ul class="nav navbar-nav navbar-right">
-		            <li><Link to="/login">Login</Link></li>
-		            <li><a href="../navbar-static-top/">Get Started</a></li>
-		          </ul>
+		          </ul>		          
+		          	{		          		
+		          		isLoggedIn ? (
+		          			<ul class="nav navbar-nav navbar-right">
+		          				<li><a href="../navbar-static-top/">Welcome, {username}</a></li>
+		          				<li><a href="../navbar-static-top/">Log Out</a></li>
+		          			</ul>
+		          		) : (
+		          			<ul class="nav navbar-nav navbar-right">
+		            			<li><Link to="/login">Login</Link></li>
+		            			<li><a href="../navbar-static-top/">Get Started</a></li>
+		            		</ul>
+		            	)		            	
+		          	}		          
 		        </div>
 		      </div>
 		    </nav>
@@ -33,3 +44,12 @@ export default class Navbar extends React.Component{
 			);
 	}
 }
+
+const mapStateToProps = (state) => {
+	return {
+		isLoggedIn: state.user.isLoggedIn,
+		username: state.user.userObject.user
+	};
+};
+
+export default connect(mapStateToProps)(Navbar);
