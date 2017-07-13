@@ -1,7 +1,9 @@
 import React from 'react';
+import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { fetchingUserProject } from '../../actions/projectActions';
+import { push } from 'react-router-redux';
+import { fetchingUserProject, selectState } from '../../actions/projectActions';
 
 class ProjectList extends React.Component {
     constructor(props) {
@@ -10,8 +12,16 @@ class ProjectList extends React.Component {
         //Fetch all the projects that is associated to this user
     	const { username } = this.props;
     	this.props.fetchingUserProject(username);
+    	this.navigateProgramatically = this.navigateProgramatically.bind(this);
     }
 
+	navigateProgramatically(e) {
+		e.preventDefault();
+		const targetLink = e.target.getAttribute("href");
+
+		this.props.selectState(targetLink.substring(11));
+		this.props.transitNext(targetLink);
+	}
  
     render() {
     	const { projects } = this.props;
@@ -22,21 +32,23 @@ class ProjectList extends React.Component {
 			paddingRight: '20px',
 			paddingLeft: '20px',
 	
-		}	
+		}
+		const self = this;	
         return (
         		<div>
 			        <h3>Projects</h3>
-			        <ul style={navSideBarStyle}>
+			        <ul class="list-group">
 			        {
 			          	projects.map(function(project){
-			          			return <li key={ project._id }> 
-			          						<Link to={'/dashboard/' + project._id}>
+			          			return <li key={ project._id } class="list-group-item"> 
+			          						<Link to={'/dashboard/' + project._id}
+			          							onClick={self.navigateProgramatically}
+			          							replace>
 			          							{ project.title }
 			          						</Link>
 			          					</li>;
 			          	})
 			        }
-			        <li><Link to='/addproject'><strong>Add Project</strong></Link></li>
 			        </ul>
 	            </div>
         );
@@ -52,10 +64,16 @@ const mapStateToProps = (state) => {
 	};
 };
 
-const mapDispatchToProps = (dispatch) => ({
-	fetchingUserProject(username) {
-		dispatch(fetchingUserProject(username));
-	}
-});
+const mapDispatchToProps = (dispatch) => {
+	return {
+		actions: bindActionCreators({ }, dispatch),
+		fetchingUserProject: (username) => {
+			dispatch(fetchingUserProject(username));
+		},
+		selectState: (project_id) => dispatch(selectState(project_id)),
+		transitNext: (url) => dispatch(push(url))
+	};
+};
+
 
 export default connect(mapStateToProps, mapDispatchToProps)(ProjectList);

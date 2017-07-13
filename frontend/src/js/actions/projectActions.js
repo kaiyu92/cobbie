@@ -19,6 +19,19 @@ export const ADD_NODE_FAIL = 'ADD_NODE_FAIL';
 
 export const RESET_UPDATE_STATE = 'RESET_UPDATE_STATE';
 
+export const SELECT_USER_PROJECT = 'SELECT_USER_PROJECT';
+
+export const SET_SELECTING_STATE = 'SET_SELECTING_STATE';
+
+export const SELECT_PROJECT_MODAL = 'SELECT_PROJECT_MODAL';
+export const DESELECT_PROJECT_MODAL = 'DESELECT_PROJECT_MODAL';
+
+export const SELECT_USER_PROJECT_MODAL = 'SELECT_USER_PROJECT_MODAL';
+export const DESELECT_USER_PROJECT_MODAL = 'DESELECT_USER_PROJECT_MODAL';
+
+export const SELECT_NODE_PROJECT_MODAL = 'SELECT_NODE_PROJECT_MODAL';
+export const DESELECT_NODE_PROJECT_MODAL = 'DESELECT_NODE_PROJECT_MODAL';
+
 //Fetching project process
 export function fetchingUserProject(username) {
 	return dispatch => {
@@ -93,15 +106,17 @@ export function addProjectFailure(error) {
 }
 
 //Update project with more user
-export function addUserProject(project_id, user) {
+export function addUserProject(project_id, targerUser, username) {
 	return dispatch => {
 		return Request.put(ROOT_URL + '/addUserProject/' + project_id)
 				.send({
-					user: user			
+					user: targerUser			
 				})
 				.end(function(err, res){
-					if(res.body.status === 'success')
-						dispatch(addProjectSuccess(res.body.message));
+					if(res.body.status === 'success') {
+						dispatch(fetchingUserProject(username));
+						dispatch(updateProjectSuccess(res.body.message));
+					}
 					else
 						dispatch(updateProjectFailure(res.body.message));
 				});
@@ -109,7 +124,7 @@ export function addUserProject(project_id, user) {
 }
 
 //Update project with more node
-export function addNodeProject(project_id, node_id) {
+export function addNodeProject(project_id, node_id, user) {
 	return dispatch => {
 		return Request.put(ROOT_URL + '/addNodeProject/' + project_id)
 				.send({
@@ -117,7 +132,10 @@ export function addNodeProject(project_id, node_id) {
 				})
 				.end(function(err, res){
 					if(res.body.status === 'success')
-						dispatch(addProjectSuccess(res.body.message));
+					{
+						dispatch(fetchingUserProject(user));
+						dispatch(updateProjectSuccess(res.body.message));
+					}
 					else
 						dispatch(updateProjectFailure(res.body.message));
 				});
@@ -162,7 +180,7 @@ export function addNewNode(node_title, node_desc,
 				.end(function(err, res){
 					if(res.body.status === 'success')
 					{
-						dispatch(addNodeProject(proj_id, res.body.id));
+						dispatch(addNodeProject(proj_id, res.body.id, user));
 					}
 					else
 						dispatch(addNodeFailure(res.body.message));
@@ -176,6 +194,46 @@ export function addNodeSuccess(msg) {
 
 export function addNodeFailure(error) {
 	return { type: ADD_NODE_FAIL, payload: error }
+}
+
+export function selectUserProject(projects, project_id)
+{
+	for(let i = 0; i < projects.length; i++)
+	{
+	    if(projects[i]._id === project_id)
+	    	return { type: SELECT_USER_PROJECT, payload: projects[i].users }
+	}	
+}
+
+//ADD PROJECT MODAL
+export function selectProjectModal() {
+	return { type: SELECT_PROJECT_MODAL }
+}
+
+export function deselectProjectModal() {
+	return { type: DESELECT_PROJECT_MODAL }
+}
+
+//ADD USER MODAL
+export function selectUserProjectModal() {
+	return { type: SELECT_USER_PROJECT_MODAL }
+}
+
+export function deselectUserProjectModal() {
+	return { type: DESELECT_USER_PROJECT_MODAL }
+}
+
+//ADD NODE MODEL
+export function selectNodeProjectModal() {
+	return { type: SELECT_NODE_PROJECT_MODAL }
+}
+
+export function deselectNodeProjectModal() {
+	return { type: DESELECT_NODE_PROJECT_MODAL }
+}
+
+export function selectState(project_id) {
+	return { type: SET_SELECTING_STATE, payload: project_id }
 }
 
 export function resetUpdateState() {

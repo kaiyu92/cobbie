@@ -1,15 +1,42 @@
 import React from 'react';
+import { bindActionCreators } from 'redux';
 import SortableTree from 'react-sortable-tree';
 import { connect } from 'react-redux';
-import ProjectList from '../components/project/ProjectList'
-import { fetchNodeProject } from '../actions/projectActions';
+import { Link } from 'react-router-dom';
+import Modal from 'react-modal';
 
-const users =[];
+import ProjectList from '../components/project/ProjectList';
+import UserProjectList from '../components/project/UserProjectList';
+import NodeProjectList from '../components/project/NodeProjectList';
+
+import AddProjectForm from '../components/project/AddIndex';
+import AddUserProjectForm from '../components/project/AddUserIndex';
+import AddNodeProjectForm from '../components/project/AddNodeIndex';
+
+import { fetchNodeProject, 
+	selectUserProject, 
+	resetUpdateState,
+	selectProjectModal,
+	deselectProjectModal,
+	selectUserProjectModal,
+	deselectUserProjectModal,
+	selectNodeProjectModal,
+	deselectNodeProjectModal  } from '../actions/projectActions';
 
 class Dashboard extends React.Component {
     constructor(props) {
         super(props);
 
+        this.openProjectModal = this.openProjectModal.bind(this);
+        this.closeProjectModal = this.closeProjectModal.bind(this);
+
+        this.openUserProjectModal = this.openUserProjectModal.bind(this);
+        this.closeUserProjectModal = this.closeUserProjectModal.bind(this);
+
+        this.openNodeProjectModal = this.openNodeProjectModal.bind(this);
+        this.closeNodeProjectModal = this.closeNodeProjectModal.bind(this);
+
+        this.handleRefresh = this.handleRefresh.bind(this);
         // this.state = {
         //     treeData: [{ title: 'Orbital', children: [ { title: 'Website', children: [{ title: 'React'}], expanded: true}, 
         //     										{ title: 'Mobile App', children: [
@@ -19,28 +46,76 @@ class Dashboard extends React.Component {
         //     		}]
         // }; 
     }
- 
-    render() {
-		
-		const { projects } = this.props;
+ 	
+ 	componentDidUpdate() {
+ 		// console.log(this.props);
+		const { isProjectSelected, projects, selectedProject_id } = this.props;
 		const { project_id } = this.props.match.params;
-		const { nodes } = this.props;
 
-		//When user select one of the projects
-		if(project_id !== undefined)
-		{
-	    	for(let i = 0; i < projects.length; i++)
-	    	{
-	    		if(projects[i]._id === project_id)
-	    		{
-	    			//Get all the user that is working on this project
-	    			Object.assign(users, projects[i].users);
-	    			break;
-	    		}
-	    	}
+		if(isProjectSelected) {
+			this.props.selectUserProject(projects, selectedProject_id);
+			this.props.fetchNodeProject(selectedProject_id);			
+			this.props.cleanUp();
+		}
+	}
 
-	    	//Get all the nodes that is in this project
-	    	this.props.fetchNodeProject(project_id);			
+	openProjectModal() {
+		this.props.selectProjectModal();
+	}
+
+	closeProjectModal(){
+		this.props.deselectProjectModal();
+	}
+
+	openUserProjectModal() {
+		this.props.selectUserProjectModal();
+	}
+
+	closeUserProjectModal() {
+		this.props.deselectUserProjectModal();
+	}
+
+	openNodeProjectModal() {
+		this.props.selectNodeProjectModal();
+	}
+
+	closeNodeProjectModal() {
+		this.props.deselectNodeProjectModal();
+	}
+
+	handleRefresh(e) {
+		e.preventDefault();
+		const { projects, selectedProject_id } = this.props;
+		this.props.selectUserProject(projects, selectedProject_id);
+		this.props.fetchNodeProject(selectedProject_id);		
+	}
+
+    render() {
+
+		const { projects, project_modal, user_modal, node_modal } = this.props;
+		const { project_id } = this.props.match.params;
+
+		const customStyles = {
+			  overlay : {
+			    position          : 'fixed',
+			    top               : 0,
+			    left              : 0,
+			    right             : 0,
+			    bottom            : 0,
+			    backgroundColor   : 'rgba(0, 0, 0, 0.5)'
+			  },
+			  content : {
+			    top                   : '50%',
+			    left                  : '50%',
+			    right                 : 'auto',
+			    bottom                : 'auto',
+			    marginRight           : '-50%',
+			    transform             : 'translate(-50%, -50%)'
+			  }
+		};
+
+		const addBtnStyle = {
+			marginTop: '-17px'
 		}
 		const navSideBarStyle = {
 			marginRight: '-21px',
@@ -72,7 +147,7 @@ class Dashboard extends React.Component {
 			         //    </div>	
 			         // project.users.map(function(user){
 						      //     			return <li > 
-						      //     				console.log(user);
+						      //     				//(user);
 						      //     					{user}
 						      //     				</li>;					        				
 					       //  			})	
@@ -80,36 +155,60 @@ class Dashboard extends React.Component {
         	<div class="container-fluid">
         		<div class="row">
 			        <div class="col-xs-3 col-sm-2 sidebar" style={sideBarStyle}>
+			        <div>
+			        	<a href="#" onClick={this.handleRefresh}>
+			        		<span class ="glyphicon glyphicon-refresh"></span>
+			        	</a>
+			        </div>
 			         <ProjectList />
+			         <div>
+			         	<button onClick={this.openProjectModal} class="btn icon-btn btn-default" style={addBtnStyle}>
+			         	<span class="glyphicon btn-glyphicon glyphicon-plus img-circle text-muted"></span>
+			         	Add</button>
+			         	<Modal
+			         		isOpen={project_modal}
+			         		onRequestClose={this.closeProjectModal}
+			         		style={customStyles}
+			         		contentLabel="Project Modal">
+			         		<AddProjectForm />
+			         	</Modal>
+
+			         </div>
 			         {
 			         	project_id !== undefined ?			         	
 		        		<div>
-					        <h3>Team</h3>
-					        <ul style={navSideBarStyle}>
-					        {
-						         users.map(function(user){
-									          	return <li key={ user }> 
-									          			{user}
-									          			</li>;					        				
-								        		})	
-					        }  	
-					        </ul>
+		        			<UserProjectList/>
+		        			<div>
+					         	<button onClick={this.openUserProjectModal} class="btn icon-btn btn-default" style={addBtnStyle}>
+					         	<span class="glyphicon btn-glyphicon glyphicon-plus img-circle text-muted"></span>
+					         	Add</button>
+					         	<Modal
+					         		isOpen={user_modal}
+					         		onRequestClose={this.closeUserProjectModal}
+					         		style={customStyles}
+					         		contentLabel="User Modal">
+					         		<AddUserProjectForm />
+					         	</Modal>		        			
+		        			</div>
 			            </div> :
 			            <div></div>
 			         }
 			         {
-			            nodes.length > 0 ?
+			            project_id !== undefined ?
 			            <div>
-			            	<h3>Nodes</h3>
-					        <ul style={navSideBarStyle}>
-					        {
-						         nodes.map(function(node){
-									          	return <li key={ node._id }> 
-									          			{node.title}
-									          			</li>;					        				
-								        		})	
-					        }  	
-					        </ul>			            	
+							<NodeProjectList/>
+							<div>
+					         	<button onClick={this.openNodeProjectModal} class="btn icon-btn btn-default" style={addBtnStyle}>
+					         	<span class="glyphicon btn-glyphicon glyphicon-plus img-circle text-muted"></span>
+					         	Add</button>
+					         	<Modal
+					         		isOpen={node_modal}
+					         		onRequestClose={this.closeNodeProjectModal}
+					         		style={customStyles}
+					         		contentLabel="Node Modal">
+					         		<AddNodeProjectForm />
+					         	</Modal>							
+							</div>	            	
 			            </div> :
 			            <div></div>			         	
 			         }
@@ -129,14 +228,32 @@ const mapStateToProps = (state) => {
 		projects: state.project.projects,
 		projectError: state.project.error,
 		username: state.user.userObject.user,
-		nodes: state.project.nodes
+		isProjectSelected: state.project.isProjectSelected,
+		selectedProject_id: state.project.selectedProject_id,
+		project_modal: state.project.project_modal,
+		user_modal: state.project.user_modal,
+		node_modal: state.project.node_modal
 	};
 };
 
-const mapDispatchToProps = (dispatch) => ({
-	fetchNodeProject(project_id) {
-		dispatch(fetchNodeProject(project_id));
-	}
-});
+const mapDispatchToProps = (dispatch) => {
+	return {
+		actions: bindActionCreators({ }, dispatch),
+		fetchNodeProject: (project_id) => {
+			dispatch(fetchNodeProject(project_id));
+		},
+		selectUserProject: (projects, project_id) => {
+			dispatch(selectUserProject(projects, project_id));
+		},
+		cleanUp: () => dispatch(resetUpdateState()),
+		selectProjectModal: () => dispatch(selectProjectModal()),
+		deselectProjectModal: () => dispatch(deselectProjectModal()),
+		selectUserProjectModal: () => dispatch(selectUserProjectModal()),
+		deselectUserProjectModal: () => dispatch(deselectUserProjectModal()),
+		selectNodeProjectModal: () => dispatch(selectNodeProjectModal()),
+		deselectNodeProjectModal: () => dispatch(deselectNodeProjectModal())
+	};
+};
+
 
 export default connect(mapStateToProps, mapDispatchToProps)(Dashboard);

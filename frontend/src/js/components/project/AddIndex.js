@@ -1,7 +1,7 @@
 import React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { addNewProject, resetUpdateState } from '../../actions/projectActions';
+import { addNewProject, deselectProjectModal, resetUpdateState } from '../../actions/projectActions';
 import AddProjectForm from './AddProjectForm';
 
 //redux
@@ -21,16 +21,9 @@ const mapDispatchToProps = (dispatch) => {
 			dispatch(addNewProject(project_title, project_desc, deadline, user,
 									pri_title, pri_desc));
 		},
-		cleanUp: () => dispatch(resetUpdateState())
+		cleanUp: () => dispatch(resetUpdateState()),
+		deselectProjectModal: () => dispatch(deselectProjectModal())
 	};
 };
-
-// const mapDispatchToProps = (dispatch) => ({
-// 	addNewProject(project_title, project_desc, deadline, user,
-// 								pri_title, pri_desc) {
-// 		dispatch(addNewProject(project_title, project_desc, deadline, user,
-// 								pri_title, pri_desc));
-// 	}
-// });
 
 export default connect(mapStateToProps, mapDispatchToProps)(AddProjectForm)

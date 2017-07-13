@@ -21,15 +21,23 @@ const validate = values => {
 
 class AddProjectForm extends React.Component {
 
-	componentDidUpdate() {
+	constructor(props) {
+		super(props);
+		this.closeProjectModal = this.closeProjectModal.bind(this);
+	}	
 
-		const { isUpdated } = this.props;
-
-		if(isUpdated) {
-			this.props.cleanUp();
-			this.props.dispatch(push('/dashboard'));
-		}
+	closeProjectModal(){
+		this.props.deselectProjectModal();
 	}
+	// componentDidUpdate() {
+
+	// 	const { isUpdated } = this.props;
+
+	// 	if(isUpdated) {
+	// 		this.props.cleanUp();
+	// 		//this.props.dispatch(push('/dashboard'));
+	// 	}
+	// }
 
 	submitForm(val){
 		const d_date = new Date(val.deadline_date);
@@ -98,6 +106,10 @@ class AddProjectForm extends React.Component {
 								style={{ width: '100%' }}/>
 				</div>
 				</form>
+				<div>
+					<button class="btn-default" style={{ width: '100%', marginTop: '10px' }}
+					onClick={this.closeProjectModal}>CANCEL</button>
+				</div>
 				{
 					projectError.length > 0 &&
 						<h4 style={{ color: '#F86E60' }}> { projectError } </h4>
