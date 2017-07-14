@@ -32,6 +32,8 @@ export const DESELECT_USER_PROJECT_MODAL = 'DESELECT_USER_PROJECT_MODAL';
 export const SELECT_NODE_PROJECT_MODAL = 'SELECT_NODE_PROJECT_MODAL';
 export const DESELECT_NODE_PROJECT_MODAL = 'DESELECT_NODE_PROJECT_MODAL';
 
+export const SELECT_TREE_DATA = 'SELECT_TREE_DATA';
+
 //Fetching project process
 export function fetchingUserProject(username) {
 	return dispatch => {
@@ -63,7 +65,10 @@ export function fetchNodeProject(project_id) {
 				if(err)
 					dispatch(fetchNodeFailure(err));
 				else
+				{
 					dispatch(fetchNodeSuccess(res.body));
+					dispatch(selectTreeData(res.body));
+				}
 			})
 	}
 }
@@ -232,8 +237,31 @@ export function deselectNodeProjectModal() {
 	return { type: DESELECT_NODE_PROJECT_MODAL }
 }
 
-export function selectState(project_id) {
-	return { type: SET_SELECTING_STATE, payload: project_id }
+export function selectState(project) {
+	return { type: SET_SELECTING_STATE, payload: project }
+}
+
+//Nodes -> TreeData
+export function selectTreeData(nodes)
+{
+	const data = [];
+	const map = {};
+
+	for(let i = 0; i < nodes.length; i++) {
+
+		const node = nodes[i];
+		node.children = [];
+		node.expanded = true;
+		map[node._id] = i;
+
+		//Check if is the primary node
+		if(node.primaryNode === 0)
+			nodes[map[node.previousNode]].children.push(node);
+		else
+			data.push(node);
+	}
+
+	return { type: SELECT_TREE_DATA, payload: data }
 }
 
 export function resetUpdateState() {
