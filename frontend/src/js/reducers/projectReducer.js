@@ -7,7 +7,8 @@ import { FETCH_PROJECT_SUCCESS, FETCH_PROJECT_FAILURE,
 		SET_SELECTING_STATE, SELECT_PROJECT_MODAL,
 		DESELECT_PROJECT_MODAL,
 		SELECT_USER_PROJECT_MODAL, DESELECT_USER_PROJECT_MODAL,
-		SELECT_NODE_PROJECT_MODAL, DESELECT_NODE_PROJECT_MODAL } from '../actions/projectActions';
+		SELECT_NODE_PROJECT_MODAL, DESELECT_NODE_PROJECT_MODAL,
+		SELECT_TREE_DATA } from '../actions/projectActions';
 
 const initialState = {
 	projects:[],
@@ -16,10 +17,12 @@ const initialState = {
 	isUpdated: false,
 	isProjectSelected: false,
 	selectedProject_id: '',
+	selectedProject_title: '', 
 	project_users: [],
 	project_modal: false,
 	user_modal: false,
-	node_modal: false
+	node_modal: false,
+	treeData: []
 };
 
 export default function projectReducer(state=initialState, action) {
@@ -89,7 +92,8 @@ export default function projectReducer(state=initialState, action) {
 		case SET_SELECTING_STATE:
 			return Object.assign({}, state, {
 				isProjectSelected: true,
-				selectedProject_id: action.payload
+				selectedProject_id: action.payload.project_id,
+				selectedProject_title: action.payload.project_title
 			})
 
 		case SELECT_PROJECT_MODAL:
@@ -126,6 +130,11 @@ export default function projectReducer(state=initialState, action) {
 		case DESELECT_NODE_PROJECT_MODAL:
 			return Object.assign({}, state, {
 				node_modal: false
+			})
+
+		case SELECT_TREE_DATA:
+			return Object.assign({}, state, {
+				treeData: action.payload
 			})						
 
 		case RESET_UPDATE_STATE:

@@ -17,9 +17,11 @@ class ProjectList extends React.Component {
 
 	navigateProgramatically(e) {
 		e.preventDefault();
+
 		const targetLink = e.target.getAttribute("href");
 
-		this.props.selectState(targetLink.substring(11));
+		this.props.selectState({ project_id: targetLink.substring(11), 
+									project_title: e.target.text });
 		this.props.transitNext(targetLink);
 	}
  
@@ -70,7 +72,7 @@ const mapDispatchToProps = (dispatch) => {
 		fetchingUserProject: (username) => {
 			dispatch(fetchingUserProject(username));
 		},
-		selectState: (project_id) => dispatch(selectState(project_id)),
+		selectState: (project) => dispatch(selectState(project)),
 		transitNext: (url) => dispatch(push(url))
 	};
 };

@@ -21,7 +21,7 @@ import { fetchNodeProject,
 	selectUserProjectModal,
 	deselectUserProjectModal,
 	selectNodeProjectModal,
-	deselectNodeProjectModal  } from '../actions/projectActions';
+	deselectNodeProjectModal } from '../actions/projectActions';
 
 class Dashboard extends React.Component {
     constructor(props) {
@@ -37,6 +37,8 @@ class Dashboard extends React.Component {
         this.closeNodeProjectModal = this.closeNodeProjectModal.bind(this);
 
         this.handleRefresh = this.handleRefresh.bind(this);
+
+        this.updateTreeData = this.updateTreeData.bind(this);
         // this.state = {
         //     treeData: [{ title: 'Orbital', children: [ { title: 'Website', children: [{ title: 'React'}], expanded: true}, 
         //     										{ title: 'Mobile App', children: [
@@ -49,7 +51,7 @@ class Dashboard extends React.Component {
  	
  	componentDidUpdate() {
  		// console.log(this.props);
-		const { isProjectSelected, projects, selectedProject_id } = this.props;
+		const { isProjectSelected, projects, selectedProject_id, nodes } = this.props;
 		const { project_id } = this.props.match.params;
 
 		if(isProjectSelected) {
@@ -85,14 +87,20 @@ class Dashboard extends React.Component {
 
 	handleRefresh(e) {
 		e.preventDefault();
-		const { projects, selectedProject_id } = this.props;
+		const { projects, selectedProject_id, nodes } = this.props;
 		this.props.selectUserProject(projects, selectedProject_id);
 		this.props.fetchNodeProject(selectedProject_id);		
 	}
 
+	updateTreeData(treeData) {
+
+	}
+
     render() {
 
-		const { projects, project_modal, user_modal, node_modal } = this.props;
+		const { projects, project_modal, selectedProject_title, 
+			user_modal, node_modal, 
+			treeData } = this.props;
 		const { project_id } = this.props.match.params;
 
 		const customStyles = {
@@ -151,6 +159,7 @@ class Dashboard extends React.Component {
 						      //     					{user}
 						      //     				</li>;					        				
 					       //  			})	
+
         return (
         	<div class="container-fluid">
         		<div class="row">
@@ -214,7 +223,19 @@ class Dashboard extends React.Component {
 			         }
 			        </div>
         			<div class="col-xs-9 col-sm-10 col-sm-offset-2 col-xs-offset-3">
-
+					{
+						project_id !== undefined ?
+						<div>
+							<h3 class="page-header">{selectedProject_title}</h3>
+						    <div style={{ height: 420 }}>
+				                <SortableTree
+				                    treeData={treeData}
+				                    onChange={this.updateTreeData}
+				                    canDrag={false} />        					
+	        				</div>
+        				</div> :
+        				<div></div>
+        			}
 		            </div>
 	            </div>
             </div>
@@ -230,9 +251,12 @@ const mapStateToProps = (state) => {
 		username: state.user.userObject.user,
 		isProjectSelected: state.project.isProjectSelected,
 		selectedProject_id: state.project.selectedProject_id,
+		selectedProject_title: state.project.selectedProject_title,
 		project_modal: state.project.project_modal,
 		user_modal: state.project.user_modal,
-		node_modal: state.project.node_modal
+		node_modal: state.project.node_modal,
+		treeData: state.project.treeData,
+		nodes: state.project.nodes
 	};
 };
 
