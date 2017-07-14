@@ -32,15 +32,17 @@ export default class Home extends React.Component {
 			<div id="home-container">
 			  <div id ="first-bar">
 			    <img id="image" src={Logo}/>
-			    <p>Cobbie is the most popular brainstorming application that
-			    allows better productivity & progress in team project</p>
+			    <p>The most popular brainstorming application.</p>
 			    <button type="button">Get Started</button>
 			  </div>
+				<div id="inbetw-bar">
+					<h1> Productivity & Progress </h1>
+					<p> In the scenario where brainstorming becomes complex, Cobbie is there to help to sort it out. Targeted for project teams, Cobbie consolidates ideas to help streamline the brainstorming process. </p>
+				</div>
 			  <div id ="sec-bar">
-			    <h1> Targeted at project teams.</h1>
-			    <h2> Built for corporate and students alike. </h2>
+					<h1> Visualise your ideas. </h1>
 			    <table>
-			      <tr>
+			      <tr id="pic-text">
 			        <th>Create a Team</th>
 			        <th>Select a Deadline</th>
 			        <th>Start Adding Ideas</th>
@@ -48,11 +50,11 @@ export default class Home extends React.Component {
 			        <th>View the Tree</th>
 			      </tr>
 			      <tr>
-			        <th><img id="img" src={Logo1} /></th>
-			        <th><img id="img" src={Logo2} /></th>
-			        <th><img id="img" src={Logo3} /></th>
-			        <th><img id="img" src={Logo4} /></th>
-			        <th><img id="img" src={Logo5} /></th>
+			        <th><img class="img" src={Logo1} /></th>
+			        <th><img class="img-two" src={Logo2} /></th>
+			        <th><img class="img-two" src={Logo3} /></th>
+			        <th><img class="img-two" src={Logo4} /></th>
+			        <th><img class="img" src={Logo5} /></th>
 			      </tr>
 					</table>
 				</div>
