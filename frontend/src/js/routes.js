@@ -37,7 +37,7 @@ const DashboardRoutes = () => (
 export default class routes extends React.Component {
 
 	render() {
-		console.log(store.getState());
+		//console.log(store.getState());
 		return(
 			<Provider store={ store }>
 			  { /*ConnectedRouter will use the store from Provider automatically */ }

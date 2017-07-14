@@ -42,6 +42,7 @@ export default class Home extends React.Component {
 			  <div id ="sec-bar">
 					<h1> Visualise your ideas. </h1>
 			    <table>
+			    <tbody>
 			      <tr id="pic-text">
 			        <th>Create a Team</th>
 			        <th>Select a Deadline</th>
@@ -56,7 +57,8 @@ export default class Home extends React.Component {
 			        <th><img class="img-two" src={Logo4} /></th>
 			        <th><img class="img" src={Logo5} /></th>
 			      </tr>
-					</table>
+			      </tbody>
+				</table>
 				</div>
 		</div>
 		);
