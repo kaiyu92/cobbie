@@ -17,11 +17,11 @@ class ProjectList extends React.Component {
 
 	navigateProgramatically(e) {
 		e.preventDefault();
-
 		const targetLink = e.target.getAttribute("href");
 
 		this.props.selectState({ project_id: targetLink.substring(11), 
 									project_title: e.target.text });
+
 		this.props.transitNext(targetLink);
 	}
  

@@ -21,7 +21,7 @@ import { fetchNodeProject,
 	selectUserProjectModal,
 	deselectUserProjectModal,
 	selectNodeProjectModal,
-	deselectNodeProjectModal } from '../actions/projectActions';
+	deselectNodeProjectModal  } from '../actions/projectActions';
 
 class Dashboard extends React.Component {
     constructor(props) {
@@ -51,7 +51,8 @@ class Dashboard extends React.Component {
  	
  	componentDidUpdate() {
  		// console.log(this.props);
-		const { isProjectSelected, projects, selectedProject_id, nodes } = this.props;
+		const { isProjectSelected, projects, selectedProject_id } = this.props;
+
 		const { project_id } = this.props.match.params;
 
 		if(isProjectSelected) {
@@ -87,7 +88,9 @@ class Dashboard extends React.Component {
 
 	handleRefresh(e) {
 		e.preventDefault();
-		const { projects, selectedProject_id, nodes } = this.props;
+
+		const { projects, selectedProject_id } = this.props;
+
 		this.props.selectUserProject(projects, selectedProject_id);
 		this.props.fetchNodeProject(selectedProject_id);		
 	}
