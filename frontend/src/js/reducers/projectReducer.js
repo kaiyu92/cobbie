@@ -22,7 +22,11 @@ const initialState = {
 	project_modal: false,
 	user_modal: false,
 	node_modal: false,
-	treeData: []
+	treeData: [],
+	project_users: [],
+	project_modal: false,
+	user_modal: false,
+	node_modal: false
 };
 
 export default function projectReducer(state=initialState, action) {
