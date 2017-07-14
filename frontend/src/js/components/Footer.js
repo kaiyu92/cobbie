@@ -4,15 +4,10 @@ import { connect } from 'react-redux';
 class Footer extends React.Component {
 	render() {
 		const { isLoggedIn } = this.props;
-		const footerStyle = {
-			  position: 'absolute',
-			  bottom: '0',
-			  width: '100%',
-		}
 
 		return (
 			<div>
-				<footer style={footerStyle}>
+				<footer id="footer">
 					{
 						isLoggedIn ? (
 							<div class="container-fluid">
@@ -20,16 +15,16 @@ class Footer extends React.Component {
 									<div class="col-xs-9 col-sm-10 col-sm-offset-2 col-xs-offset-3">
 										<hr/>
 			        					<p>&copy; 2017 Cobbie, Inc.</p>
-			        				</div>		
+			        				</div>
 		        				</div>
-		        			</div>							
+		        			</div>
 						) : (
 							<div class="container">
 								<div class="row">
 										<hr/>
-			        					<p>&copy; 2017 Cobbie, Inc.</p>	
+			        					<p>&copy; 2017 Cobbie, Inc.</p>
 		        				</div>
-		        			</div>	
+		        			</div>
 						)
 					}
       			</footer>
