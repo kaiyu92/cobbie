@@ -8,7 +8,7 @@ class Navbar extends React.Component{
 
 		return (
 		    <nav class="navbar navbar-default navbar-fixed-top">
-		      <div class="container">
+		      <div class="container-fluid">
 		        <div class="navbar-header">
 		          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
 		            <span class="sr-only">Toggle navigation</span>
@@ -18,7 +18,7 @@ class Navbar extends React.Component{
 		          </button>
 		          <Link to="/" class="navbar-brand">Cobbie</Link>
 		        </div>
-		        <div id="navbar" class="navbar-collapse collapse">
+		        <div id="navbar" class="collapse navbar-collapse">
 		          <ul class="nav navbar-nav">
 		            <li><Link to="/">Home</Link></li>
 		            <li><Link to="/about">About</Link></li>

@@ -8,6 +8,7 @@ import { FETCH_PROJECT_SUCCESS, FETCH_PROJECT_FAILURE,
 		DESELECT_PROJECT_MODAL,
 		SELECT_USER_PROJECT_MODAL, DESELECT_USER_PROJECT_MODAL,
 		SELECT_NODE_PROJECT_MODAL, DESELECT_NODE_PROJECT_MODAL,
+		SELECT_NODE_DETAIL_MODAL, DESELECT_NODE_DETAIL_MODAL,
 		SELECT_TREE_DATA } from '../actions/projectActions';
 
 const initialState = {
@@ -22,11 +23,9 @@ const initialState = {
 	project_modal: false,
 	user_modal: false,
 	node_modal: false,
+	node_detail_modal: false,
+	selectedNode: {},
 	treeData: [],
-	project_users: [],
-	project_modal: false,
-	user_modal: false,
-	node_modal: false
 };
 
 export default function projectReducer(state=initialState, action) {
@@ -104,7 +103,8 @@ export default function projectReducer(state=initialState, action) {
 			return Object.assign({}, state, {
 				project_modal: true,
 				user_modal: false,
-				node_modal: false
+				node_modal: false,
+				node_detail_modal: false
 			})
 
 		case DESELECT_PROJECT_MODAL:
@@ -116,7 +116,8 @@ export default function projectReducer(state=initialState, action) {
 			return Object.assign({}, state, {
 				project_modal: false,
 				user_modal: true,
-				node_modal: false
+				node_modal: false,
+				node_detail_modal: false
 			})
 
 		case DESELECT_USER_PROJECT_MODAL:
@@ -128,12 +129,28 @@ export default function projectReducer(state=initialState, action) {
 			return Object.assign({}, state, {
 				project_modal: false,
 				user_modal: false,
-				node_modal: true
+				node_modal: true,
+				node_detail_modal: false
 			})
 
 		case DESELECT_NODE_PROJECT_MODAL:
 			return Object.assign({}, state, {
 				node_modal: false
+			})
+
+		case SELECT_NODE_DETAIL_MODAL:
+			return Object.assign({}, state, {
+				project_modal: false,
+				user_modal: false,
+				node_modal: false,
+				node_detail_modal: true,
+				selectedNode: action.payload
+			})
+
+		case DESELECT_NODE_DETAIL_MODAL:
+			return Object.assign({}, state, {
+				node_detail_modal: false,
+				selectedNode: {}
 			})
 
 		case SELECT_TREE_DATA:

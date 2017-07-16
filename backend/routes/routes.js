@@ -207,7 +207,8 @@ router.route('/addNode').post(function(req, res){
 	newNode.desc = req.body.desc;
 	newNode.created_by = req.body.created_by;
 	newNode.primaryNode = req.body.primaryNode; 
-	newNode.previousNode = req.body.previousNode; 
+	newNode.previousNode = req.body.previousNode;
+	newNode.likes = req.body.likes; 
 	newNode.project_id = req.body.project_id; 
 
 	newNode.save(function(err, result) {
@@ -224,6 +225,47 @@ router.route('/addNode').post(function(req, res){
 				id: result._id
 			})
 	});
+});
+
+//Add like to the node ...
+//PUT update node (using PUT at http://localhost:3001/addLike/:node_id/users/:user)
+router.route('/addLike/:node_id/users/:user').put(function(req, res) {
+	Node.findByIdAndUpdate(req.params.node_id, 
+							{ $push: { likes: req.params.user }},
+							{ new: true }, function(err, node_like) {
+								if(err)
+									res.json({
+										status: 'fail',
+										message: 'Sorry, unable to add like to this node'
+									})
+									//res.send(err);
+								else
+									res.json({ 
+										status: 'success',
+										message: 'Successfully added like to this node'
+									})
+							})
+});
+
+
+//Remove like to the node ...
+//PUT update node (using PUT at http://localhost:3001/removeLike/:node_id/users/:user)
+router.route('/removeLike/:node_id/users/:user').put(function(req, res) {
+	Node.findByIdAndUpdate(req.params.node_id, 
+							{ $pull: { likes: req.params.user }},
+							{ new: true }, function(err, node_like) {
+								if(err)
+									res.json({
+										status: 'fail',
+										message: 'Sorry, unable to remove like to this node'
+									})
+									//res.send(err);
+								else
+									res.json({ 
+										status: 'success',
+										message: 'Successfully removed like to this node'
+									})
+							})
 });
 
 //GET all node (using a GET at http://localhost:3001/nodes)

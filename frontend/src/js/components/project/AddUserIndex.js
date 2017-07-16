@@ -21,7 +21,7 @@ const mapDispatchToProps = (dispatch) => {
 			dispatch(addUserProject(project_id, targetUser, user));
 		},
 		cleanUp: () => dispatch(resetUpdateState()),
-		deselectUserProjectModal: () => dispatch(deselectProjectModal())
+		deselectUserProjectModal: () => dispatch(deselectUserProjectModal())
 	};
 };
 

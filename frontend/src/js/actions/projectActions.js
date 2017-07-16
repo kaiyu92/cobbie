@@ -32,6 +32,12 @@ export const DESELECT_USER_PROJECT_MODAL = 'DESELECT_USER_PROJECT_MODAL';
 export const SELECT_NODE_PROJECT_MODAL = 'SELECT_NODE_PROJECT_MODAL';
 export const DESELECT_NODE_PROJECT_MODAL = 'DESELECT_NODE_PROJECT_MODAL';
 
+export const SELECT_NODE_DETAIL_MODAL = 'SELECT_NODE_DETAIL_MODAL';
+export const DESELECT_NODE_DETAIL_MODAL = 'DESELECT_NODE_DETAIL_MODAL';
+
+export const ADD_NODE_LIKE = 'ADD_NODE_LIKE';
+export const REMOVE_NODE_LIKE = 'REMOVE_NODE_LIKE';
+
 export const SELECT_TREE_DATA = 'SELECT_TREE_DATA';
 
 //Fetching project process
@@ -166,6 +172,7 @@ export function addNewNode(node_title, node_desc,
 			desc: node_desc,
 			created_by: user,
 			primaryNode: primNode,
+			likes: [],
 			project_id: proj_id
 		});
 	else
@@ -175,6 +182,7 @@ export function addNewNode(node_title, node_desc,
 			created_by: user,
 			primaryNode: primNode,
 			previousNode: prevNode,
+			likes: [],
 			project_id: proj_id			
 		});
 	
@@ -228,7 +236,7 @@ export function deselectUserProjectModal() {
 	return { type: DESELECT_USER_PROJECT_MODAL }
 }
 
-//ADD NODE MODEL
+//ADD NODE MODAL
 export function selectNodeProjectModal() {
 	return { type: SELECT_NODE_PROJECT_MODAL }
 }
@@ -256,12 +264,54 @@ export function selectTreeData(nodes)
 
 		//Check if is the primary node
 		if(node.primaryNode === 0)
+		{
+			const displayDate = new Date(node.created_at);
+			node.subtitle = "Created by " + node.created_by + " at " + 
+							displayDate.getDate() + "/" + 
+							(displayDate.getMonth() + 1) + "/" +
+							displayDate.getFullYear();
 			nodes[map[node.previousNode]].children.push(node);
+		}
 		else
 			data.push(node);
 	}
 
 	return { type: SELECT_TREE_DATA, payload: data }
+}
+
+//NODE INFORMATION MODAL
+export function selectNodeDetail(node) {
+	return { type: SELECT_NODE_DETAIL_MODAL, payload: node }
+}
+
+export function deselectNodeDetail(){
+	return { type: DESELECT_NODE_DETAIL_MODAL }
+}
+
+export function addNodeLike(node_id, username, project_id) {
+	return dispatch => {
+		return Request.put(ROOT_URL + '/addLike/' + node_id + '/users/' + username)
+				.end(function(err, res){
+					if(res.body.status === 'success') {
+						dispatch(fetchNodeProject(project_id));
+					}
+					// else
+					// 	dispatch(updateProjectFailure(res.body.message));
+				});
+	}	
+}
+
+export function removeNodeLike(node_id, username, project_id) {
+	return dispatch => {
+		return Request.put(ROOT_URL + '/removeLike/' + node_id + '/users/' + username)
+				.end(function(err, res){
+					if(res.body.status === 'success') {
+						dispatch(fetchNodeProject(project_id));
+					}
+					// else
+					// 	dispatch(updateProjectFailure(res.body.message));
+				});
+	}
 }
 
 export function resetUpdateState() {
