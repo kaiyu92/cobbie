@@ -13,6 +13,8 @@ import AddProjectForm from '../components/project/AddIndex';
 import AddUserProjectForm from '../components/project/AddUserIndex';
 import AddNodeProjectForm from '../components/project/AddNodeIndex';
 
+import NodeDetailPanel from '../components/project/NodeDetailPanel';
+
 import { fetchNodeProject, 
 	selectUserProject, 
 	resetUpdateState,
@@ -21,7 +23,12 @@ import { fetchNodeProject,
 	selectUserProjectModal,
 	deselectUserProjectModal,
 	selectNodeProjectModal,
-	deselectNodeProjectModal  } from '../actions/projectActions';
+	deselectNodeProjectModal,
+	selectNodeDetail,
+	deselectNodeDetail,
+	addNodeLike,
+	removeNodeLike  } from '../actions/projectActions';
+
 
 class Dashboard extends React.Component {
     constructor(props) {
@@ -35,6 +42,9 @@ class Dashboard extends React.Component {
 
         this.openNodeProjectModal = this.openNodeProjectModal.bind(this);
         this.closeNodeProjectModal = this.closeNodeProjectModal.bind(this);
+
+        this.openNodeDetailModal = this.openNodeDetailModal.bind(this);
+        this.closeNodeDetailModal = this.closeNodeDetailModal.bind(this);
 
         this.handleRefresh = this.handleRefresh.bind(this);
 
@@ -86,6 +96,14 @@ class Dashboard extends React.Component {
 		this.props.deselectNodeProjectModal();
 	}
 
+	openNodeDetailModal() {
+		this.props.selectNodeDetail();
+	}
+
+	closeNodeDetailModal() {
+		this.props.deselectNodeDetail();
+	}
+
 	handleRefresh(e) {
 		e.preventDefault();
 
@@ -102,7 +120,7 @@ class Dashboard extends React.Component {
     render() {
 
 		const { projects, project_modal, selectedProject_title, 
-			user_modal, node_modal, 
+			user_modal, node_modal, username, node_detail_modal,
 			treeData } = this.props;
 		const { project_id } = this.props.match.params;
 
@@ -149,19 +167,20 @@ class Dashboard extends React.Component {
 			backgroundColor: '#FDFEFE',
 			borderRight: '1px solid #eee'
 		}
-        				// <h1 class="page-header">Orbital</h1>
-			         //    <div style={{ height: 400 }}>
-			         //        <SortableTree
-			         //            treeData={this.state.treeData}
-			         //            onChange={treeData => this.setState({ treeData })}
-			         //        />
-			         //    </div>	
-			         // project.users.map(function(user){
-						      //     			return <li > 
-						      //     				//(user);
-						      //     					{user}
-						      //     				</li>;					        				
-					       //  			})	
+
+		const displayNodeInfo = ({ node }) => {
+			//console.log(node);
+			this.props.selectNodeDetail(node);
+		};
+
+		const addNodeLike = ({ node }) => {
+			if(node.likes.indexOf(username) !== -1) {			
+				this.props.removeNodeLike(node._id, username, project_id);
+			}
+			else {
+				this.props.addNodeLike(node._id, username, project_id);
+			}
+		};
 
         return (
         	<div class="container-fluid">
@@ -230,12 +249,41 @@ class Dashboard extends React.Component {
 						project_id !== undefined ?
 						<div>
 							<h3 class="page-header">{selectedProject_title}</h3>
-						    <div style={{ height: 420 }}>
+						    <div style={{ height: 485 }}>
 				                <SortableTree
+				                	style={{ height: '100%',
+				                			  fontSize: '18px'}}
+				                	rowHeight={82}
 				                    treeData={treeData}
 				                    onChange={this.updateTreeData}
-				                    canDrag={false} />        					
+				                    canDrag={false} 
+				                    generateNodeProps={rowInfo => ({
+				                    	buttons: [
+				                    	<button style={{ backgroundColor: 'transparent',
+				                    					 borderRadius: '10px',}}
+				                    			onClick={() => displayNodeInfo(rowInfo)}>
+				                    		<span class="glyphicon glyphicon-info-sign"></span>
+				                    	</button>,
+				                    	<button style={{ backgroundColor: 'transparent',
+				                    					 borderRadius: '10px'}}
+				                    			onClick={() => addNodeLike(rowInfo)}>
+				                    		<span class="glyphicon glyphicon-thumbs-up"
+				                    			style={{color: rowInfo.node.likes.indexOf(username) !== -1 ?
+				                    								'#73D9FF' : '#515151' }}></span>
+				                    	</button>				                    	
+				                    	]
+				                    })}/>        					
 	        				</div>
+	        				<div>
+	        					<Modal
+	        						isOpen={node_detail_modal}
+	        						onRequestClose={this.closeNodeDetailModal}
+	        						style={customStyles}
+	        						contentLabel="Node Detail">
+	        						<NodeDetailPanel />
+	        					</Modal>
+	        				</div>
+
         				</div> :
         				<div></div>
         			}
@@ -258,6 +306,7 @@ const mapStateToProps = (state) => {
 		project_modal: state.project.project_modal,
 		user_modal: state.project.user_modal,
 		node_modal: state.project.node_modal,
+		node_detail_modal: state.project.node_detail_modal,
 		treeData: state.project.treeData,
 		nodes: state.project.nodes
 	};
@@ -272,13 +321,21 @@ const mapDispatchToProps = (dispatch) => {
 		selectUserProject: (projects, project_id) => {
 			dispatch(selectUserProject(projects, project_id));
 		},
+		addNodeLike: (node_id, username, project_id) => {
+			dispatch(addNodeLike(node_id, username, project_id));
+		},
+		removeNodeLike: (node_id, username, project_id) => {
+			dispatch(removeNodeLike(node_id, username, project_id));
+		},
 		cleanUp: () => dispatch(resetUpdateState()),
 		selectProjectModal: () => dispatch(selectProjectModal()),
 		deselectProjectModal: () => dispatch(deselectProjectModal()),
 		selectUserProjectModal: () => dispatch(selectUserProjectModal()),
 		deselectUserProjectModal: () => dispatch(deselectUserProjectModal()),
 		selectNodeProjectModal: () => dispatch(selectNodeProjectModal()),
-		deselectNodeProjectModal: () => dispatch(deselectNodeProjectModal())
+		deselectNodeProjectModal: () => dispatch(deselectNodeProjectModal()),
+		selectNodeDetail: (node) => { dispatch(selectNodeDetail(node)) },
+		deselectNodeDetail: () => dispatch(deselectNodeDetail())
 	};
 };
 

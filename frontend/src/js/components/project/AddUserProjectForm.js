@@ -28,17 +28,6 @@ class AddUserProjectForm extends React.Component {
 		this.props.deselectUserProjectModal();
 	}
 
-	// componentDidUpdate() {
-
-	// 	const { isUpdated, selectedProject_id } = this.props;
-
-	// 	if(isUpdated) {
-	// 		// this.props.cleanUp();
-	// 		// this.props.dispatch(push('/dashboard'));
-	// 		//this.props.dispatch(push('/dashboard/' + selectedProject_id + '/' + true));
-	// 	}
-	// }
-
 	submitForm(val){
 		const { selectedProject_id, user } = this.props;
 		this.props.addUserProject(selectedProject_id, val.username, user);

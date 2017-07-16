@@ -8,6 +8,7 @@ var NodeSchema = new Schema({
 	created_by: String,
 	primaryNode: Number,
 	previousNode: { type: Schema.Types.ObjectId, ref: 'Node' },
+	likes: [{ type: String, ref: 'User' }],
 	project_id: { type: Schema.Types.ObjectId, ref: 'Project'}
 });
 
