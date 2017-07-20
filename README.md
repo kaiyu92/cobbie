@@ -22,7 +22,7 @@ npm run dev
 
 ### Backend
 
-Backend is build using node.js, express, & mongodb.
+Backend is build using node.js, express, & mongodb to form RESTful API.
 
 To get the backend process running:
 
@@ -31,3 +31,19 @@ cd backend
 npm install
 node app.js
 ```
+
+### Note
+
+Before running backend/frontend, please ensure mongodb is installed and run first.
+
+To startup mongodb server (must run in root or administrator):
+```
+MAC/LINUX:
+In terminal, type mongod.
+```
+
+```
+WINDOWS:
+In cmd, cd to the mongodb directory (e.g. C:\Program Files\MongoDB\Server\3.4\bin) and type mongod.
+```
+*Another thing to take note is please run backend first before running frontend.
