@@ -18,6 +18,7 @@ export const ADD_NODE_SUCCESS = 'ADD_NODE_SUCCESS';
 export const ADD_NODE_FAIL = 'ADD_NODE_FAIL';
 
 export const RESET_UPDATE_STATE = 'RESET_UPDATE_STATE';
+export const RESET_PROJECT_STATE = 'RESET_PROJECT_STATE';
 
 export const SELECT_USER_PROJECT = 'SELECT_USER_PROJECT';
 
@@ -325,4 +326,8 @@ export function removeNodeLike(node_id, username, project_id) {
 
 export function resetUpdateState() {
 	return { type: RESET_UPDATE_STATE }
+}
+
+export function resetProjectState() {
+	return { type: RESET_PROJECT_STATE }
 }

@@ -1,8 +1,37 @@
 import React from "react";
+import { bindActionCreators } from 'redux';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
+import { push } from 'react-router-redux';
+import { resetProjectState } from '../actions/projectActions';
+import { attemptLogout } from '../actions/authActions';
+import { resetSignUp } from '../actions/user';
 
 class Navbar extends React.Component{
+	constructor(props) {
+		super(props);
+
+		this.resetSignUp = this.resetSignUp.bind(this);
+		this.logOut = this.logOut.bind(this);
+	}
+
+	logOut(e) {
+		e.preventDefault();
+		const targetLink = e.target.getAttribute("href");
+		
+		this.props.resetProjectState();
+		this.props.attemptLogout();
+		this.props.transitNext(targetLink);		
+	}
+
+	resetSignUp(e) {
+		e.preventDefault();
+		const targetLink = e.target.getAttribute("href");
+
+		this.props.resetSignUp();
+		this.props.transitNext(targetLink);				
+	}
+
 	render() {
 		const { isLoggedIn, username } = this.props;
 
@@ -20,20 +49,20 @@ class Navbar extends React.Component{
 		        </div>
 		        <div id="navbar" class="collapse navbar-collapse">
 		          <ul class="nav navbar-nav">
-		            <li><Link to="/">Home</Link></li>
-		            <li><Link to="/about">About</Link></li>
-		            <li><Link to="/dashboard">Dashboard</Link></li>
+		            <li><Link to="/" onClick={this.resetSignUp}>Home</Link></li>
+		            <li><Link to="/about" onClick={this.resetSignUp}>About</Link></li>
+		            <li><Link to="/dashboard" onClick={this.resetSignUp}>Dashboard</Link></li>
 		          </ul>		          
 		          	{		          		
 		          		isLoggedIn ? (
 		          			<ul class="nav navbar-nav navbar-right">
-		          				<li><a href="../navbar-static-top/">Welcome, {username}</a></li>
-		          				<li><a href="../navbar-static-top/">Log Out</a></li>
+		          				<li><a href="#">Welcome, {username}</a></li>
+		          				<li><Link to="/" onClick={this.logOut}>Log Out</Link></li>
 		          			</ul>
 		          		) : (
 		          			<ul class="nav navbar-nav navbar-right">
-		            			<li><Link to="/login">Login</Link></li>
-		            			<li><a href="../navbar-static-top/">Get Started</a></li>
+		            			<li><Link to="/login" onClick={this.resetSignUp}>Login</Link></li>
+		            			<li><Link to="/register" onClick={this.resetSignUp}>Get Started</Link></li>
 		            		</ul>
 		            	)		            	
 		          	}		          
@@ -52,4 +81,14 @@ const mapStateToProps = (state) => {
 	};
 };
 
-export default connect(mapStateToProps)(Navbar);
+const mapDispatchToProps = (dispatch) => {
+	return {
+		actions: bindActionCreators({ }, dispatch),
+		transitNext: (url) => dispatch(push(url)),
+		resetProjectState: () => dispatch(resetProjectState()),
+		attemptLogout:() => dispatch(attemptLogout()),
+		resetSignUp:() => dispatch(resetSignUp())
+	};
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Navbar);

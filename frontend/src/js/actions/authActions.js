@@ -3,7 +3,8 @@ import { ROOT_URL } from '../util/backend';
 
 //action types
 export const Login_Success = 'Login_Success';
-export const Login_Fail = 'Login_Fail'
+export const Login_Fail = 'Login_Fail';
+export const Logout = 'Logout';
 
 
 // Login attempt
@@ -30,4 +31,8 @@ export function attemptLogin(data) {
 				}
 			})
 	}
+}
+
+export function attemptLogout() {
+	return { type: Logout }
 }
