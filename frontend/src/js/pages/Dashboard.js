@@ -249,7 +249,7 @@ class Dashboard extends React.Component {
 						project_id !== undefined ?
 						<div>
 							<h3 class="page-header">{selectedProject_title}</h3>
-						    <div style={{ height: 485 }}>
+						    <div style={{ height: 490 }}>
 				                <SortableTree
 				                	style={{ height: '100%',
 				                			  fontSize: '18px'}}
