@@ -38,12 +38,12 @@ class LoginForm extends React.Component {
 		const { handleSubmit, loginError } = this.props;
 
 		return(
-			<div id="login-form">
+			<div>
 				<form onSubmit={ handleSubmit((values) => {
 					this.submitForm(values)
 				})}>
 				<div>
-					<TextFormField
+					<TextFormField 
 						name="identifier"
 						floatingLabelText="Username"/>
 				</div>
@@ -74,3 +74,5 @@ export default reduxForm({
 	form: 'LoginForm',
 	validate
 })(LoginForm)
+
+
