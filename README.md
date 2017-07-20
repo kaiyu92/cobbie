@@ -10,6 +10,8 @@ Cobbie Application (Consists of web app frontend &amp; REST API backend)
 
 ### Frontend
 
+Frontend is build using react, node.js.
+
 To get the frontend process running:
 
 ```
@@ -19,6 +21,8 @@ npm run dev
 ```
 
 ### Backend
+
+Backend is build using node.js, express, & mongodb.
 
 To get the backend process running:
 
