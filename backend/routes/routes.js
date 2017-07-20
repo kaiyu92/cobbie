@@ -47,20 +47,37 @@ router.route('/users').get(function(req, res) {
 
 //POST a user (using POST at http://localhost:3001/addUser)
 router.route('/addUser').post(function(req, res){
-	var newUser = new User();
 
-	//Set the user attributes
-	newUser.user = req.body.user;
-	newUser.password = req.body.password;
-	newUser.email = req.body.email;
-	newUser.firstName = req.body.firstName;
-	newUser.lastName = req.body.lastName;
+	User.find({ user: req.body.user }).exec(function(err, results) {
 
-	newUser.save(function(err) {
-		if(err)
-			res.send(err);
-		res.json({ newUser: 'Successfully created new user'});
-	});
+		//if count is not 0, means username exists
+		var count = results.length;
+
+		if(count === 0) {
+			var newUser = new User();
+
+			//Set the user attributes
+			newUser.user = req.body.user;
+			newUser.password = req.body.password;
+			newUser.email = req.body.email;
+			newUser.firstName = req.body.firstName;
+			newUser.lastName = req.body.lastName;
+
+			newUser.save(function(err) {
+				res.json({
+					status: 'success',
+					message: 'Successfully registered'
+				})
+			});
+		}
+		else
+		{
+			res.json({
+				status: 'fail',
+				message: 'Username is already registered'
+			})
+		}
+	})
 });
 
 //POST authenticate user login(using POST at http://localhost:3001/login)

@@ -15,6 +15,7 @@ import Home from './pages/Home';
 import About from './pages/About';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
+import Registration from './pages/Registration';
 
 const persistedState = loadState();
 
@@ -47,6 +48,7 @@ export default class routes extends React.Component {
 				      <Route exact path="/" component={Home}/>
 				      <Route path="/about" component={About}/>
 				      <Route path="/login" component={Login}/>
+				      <Route path="/register" component={Registration}/>
 				      <PrivateRoute path="/dashboard" component={DashboardRoutes}/>
 				    </Switch>
 			    </Layout>

@@ -5,9 +5,6 @@ import RaisedButton from 'material-ui/RaisedButton';
 import { TextFormField, PasswordFormField} from '../field/TextFieldComponents';
 
 
-import { attemptLogin } from '../../actions/authActions';
-
-
 const validate = values => {
 	const errors = {};
 	const requiredFields = ['identifier', 'password'];

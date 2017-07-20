@@ -9,7 +9,7 @@ import { FETCH_PROJECT_SUCCESS, FETCH_PROJECT_FAILURE,
 		SELECT_USER_PROJECT_MODAL, DESELECT_USER_PROJECT_MODAL,
 		SELECT_NODE_PROJECT_MODAL, DESELECT_NODE_PROJECT_MODAL,
 		SELECT_NODE_DETAIL_MODAL, DESELECT_NODE_DETAIL_MODAL,
-		SELECT_TREE_DATA } from '../actions/projectActions';
+		SELECT_TREE_DATA, RESET_PROJECT_STATE } from '../actions/projectActions';
 
 const initialState = {
 	projects:[],
@@ -166,7 +166,25 @@ export default function projectReducer(state=initialState, action) {
 				project_modal: false,
 				user_modal: false,
 				node_modal: false
-			});			
+			});
+
+		case RESET_PROJECT_STATE:
+			return Object.assign({}, state, {
+				projects:[],
+				nodes:[],
+				error: {},
+				isUpdated: false,
+				isProjectSelected: false,
+				selectedProject_id: '',
+				selectedProject_title: '', 
+				project_users: [],
+				project_modal: false,
+				user_modal: false,
+				node_modal: false,
+				node_detail_modal: false,
+				selectedNode: {},
+				treeData: [],
+			});					
 
 		default:
 			return state;
