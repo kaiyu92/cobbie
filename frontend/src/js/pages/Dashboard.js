@@ -15,6 +15,8 @@ import AddNodeProjectForm from '../components/project/AddNodeIndex';
 
 import NodeDetailPanel from '../components/project/NodeDetailPanel';
 
+import StatsProjectList from '../components/project/StatsProjectList';
+
 import { fetchNodeProject, 
 	selectUserProject, 
 	resetUpdateState,
@@ -27,7 +29,9 @@ import { fetchNodeProject,
 	selectNodeDetail,
 	deselectNodeDetail,
 	addNodeLike,
-	removeNodeLike  } from '../actions/projectActions';
+	removeNodeLike,
+	selectStatsDetail,
+	deselectStatsDetail  } from '../actions/projectActions';
 
 
 class Dashboard extends React.Component {
@@ -45,6 +49,9 @@ class Dashboard extends React.Component {
 
         this.openNodeDetailModal = this.openNodeDetailModal.bind(this);
         this.closeNodeDetailModal = this.closeNodeDetailModal.bind(this);
+
+        this.openStatsProjectModal = this.openStatsProjectModal.bind(this);
+        this.closeStatsProjectModal = this.closeStatsProjectModal.bind(this);
 
         this.handleRefresh = this.handleRefresh.bind(this);
 
@@ -104,6 +111,14 @@ class Dashboard extends React.Component {
 		this.props.deselectNodeDetail();
 	}
 
+	openStatsProjectModal() {
+		this.props.selectStatsDetail();
+	}
+
+	closeStatsProjectModal() {
+		this.props.deselectStatsDetail();
+	}
+
 	handleRefresh(e) {
 		e.preventDefault();
 
@@ -121,7 +136,7 @@ class Dashboard extends React.Component {
 
 		const { projects, project_modal, selectedProject_title, 
 			user_modal, node_modal, username, node_detail_modal,
-			treeData } = this.props;
+			stats_modal ,treeData } = this.props;
 		const { project_id } = this.props.match.params;
 
 		const customStyles = {
@@ -189,7 +204,22 @@ class Dashboard extends React.Component {
 			        <div>
 			        	<a href="#" onClick={this.handleRefresh}>
 			        		<span class ="glyphicon glyphicon-refresh"></span>
-			        	</a>
+			        	</a> &nbsp;		        	
+			        
+			        {
+			        	project_id !== undefined ?			        	
+			        		<a href="#" onClick={this.openStatsProjectModal}>
+			        			<span class ="glyphicon glyphicon-signal"></span>
+			        		</a>
+			        	 :<div></div>	
+			        }
+			        <Modal
+			        	isOpen={stats_modal}
+			        	onRequestClose={this.closeStatsProjectModal}
+			        	style={customStyles}
+			        	contentLabel="Stats Modal">
+			        	<StatsProjectList />
+			        </Modal>
 			        </div>
 			         <ProjectList />
 			         <div>
@@ -308,7 +338,8 @@ const mapStateToProps = (state) => {
 		node_modal: state.project.node_modal,
 		node_detail_modal: state.project.node_detail_modal,
 		treeData: state.project.treeData,
-		nodes: state.project.nodes
+		nodes: state.project.nodes,
+		stats_modal: state.project.stats_modal
 	};
 };
 
@@ -335,7 +366,9 @@ const mapDispatchToProps = (dispatch) => {
 		selectNodeProjectModal: () => dispatch(selectNodeProjectModal()),
 		deselectNodeProjectModal: () => dispatch(deselectNodeProjectModal()),
 		selectNodeDetail: (node) => { dispatch(selectNodeDetail(node)) },
-		deselectNodeDetail: () => dispatch(deselectNodeDetail())
+		deselectNodeDetail: () => dispatch(deselectNodeDetail()),
+		selectStatsDetail: () => dispatch(selectStatsDetail()),
+		deselectStatsDetail: () => dispatch(deselectStatsDetail()),
 	};
 };
 
