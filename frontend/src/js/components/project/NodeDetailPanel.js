@@ -15,12 +15,15 @@ function getTreePath(selectedNode, nodes) {
 	var displayStr = selectedNode.title;
 	var node = selectedNode;
 	while(true) {
+		
+		if(node.primaryNode === 1)
+			break;
+
 		node = nodes[map[node.previousNode]];
 		const str = node.title + " -> ";
 		displayStr = str.concat(displayStr);
 
-		if(node.primaryNode === 1)
-			break;
+
 	}
 
 	return displayStr;

@@ -25,6 +25,9 @@ module.exports = {
       }
     ]
   },
+  devServer: {
+      historyApiFallback: true
+  },
   output: {
     path: __dirname + "/src",
     filename: "client.min.js"

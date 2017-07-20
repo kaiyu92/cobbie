@@ -175,6 +175,7 @@ export function addNewNode(node_title, node_desc,
 			likes: [],
 			project_id: proj_id
 		});
+
 	else
 		Object.assign(data, {
 			title: node_title,
@@ -266,10 +267,18 @@ export function selectTreeData(nodes)
 		if(node.primaryNode === 0)
 		{
 			const displayDate = new Date(node.created_at);
-			node.subtitle = "Created by " + node.created_by + " at " + 
-							displayDate.getDate() + "/" + 
-							(displayDate.getMonth() + 1) + "/" +
-							displayDate.getFullYear();
+			if(node.likes.length === 0)
+				node.subtitle = "Created by " + node.created_by + " at " + 
+								displayDate.getDate() + "/" + 
+								(displayDate.getMonth() + 1) + "/" +
+								displayDate.getFullYear();
+			else
+				node.subtitle = "Created by " + node.created_by + " at " + 
+								displayDate.getDate() + "/" + 
+								(displayDate.getMonth() + 1) + "/" +
+								displayDate.getFullYear() + " (" +
+								node.likes.length + " likes)";				
+
 			nodes[map[node.previousNode]].children.push(node);
 		}
 		else
