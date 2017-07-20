@@ -36,6 +36,9 @@ export const DESELECT_NODE_PROJECT_MODAL = 'DESELECT_NODE_PROJECT_MODAL';
 export const SELECT_NODE_DETAIL_MODAL = 'SELECT_NODE_DETAIL_MODAL';
 export const DESELECT_NODE_DETAIL_MODAL = 'DESELECT_NODE_DETAIL_MODAL';
 
+export const SELECT_STATS_MODAL = 'SELECT_STATS_MODAL';
+export const DESELECT_STATS_MODAL = 'DESELECT_STATS_MODAL';
+
 export const ADD_NODE_LIKE = 'ADD_NODE_LIKE';
 export const REMOVE_NODE_LIKE = 'REMOVE_NODE_LIKE';
 
@@ -322,6 +325,15 @@ export function removeNodeLike(node_id, username, project_id) {
 					// 	dispatch(updateProjectFailure(res.body.message));
 				});
 	}
+}
+
+//STATS INFORMATION MODAL
+export function selectStatsDetail() {
+	return { type: SELECT_STATS_MODAL }
+}
+
+export function deselectStatsDetail(){
+	return { type: DESELECT_STATS_MODAL }
 }
 
 export function resetUpdateState() {
