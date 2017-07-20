@@ -10,6 +10,8 @@ Cobbie Application (Consists of web app frontend &amp; REST API backend)
 
 ### Frontend
 
+To get the frontend process running:
+
 ```
 cd frontend
 npm install
