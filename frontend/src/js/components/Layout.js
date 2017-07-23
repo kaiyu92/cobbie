@@ -8,7 +8,7 @@ export default class Layout extends React.Component {
 
 	render() {
 		const containerStyle = {
-			  padding: '80px 0px',
+			  padding: '0px 0px',
 		}
 		return (
 			<MuiThemeProvider>
