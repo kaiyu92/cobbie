@@ -7219,15 +7219,21 @@ label {
   line-height: 1.5;
 }
 
-#about-page, #login-page{
+#about-page {
   margin-top: 100px;
   text-align: center;
 }
 
 
-#login-form{
-  margin-bottom: 100%;
+#login-page{
+  margin-top: 80px;
+  margin-bottom: 32%;
 
+}
+
+#register-page {
+  margin-top: 80px;
+  margin-bottom: 15%;
 }
 
 #about-page h1{
