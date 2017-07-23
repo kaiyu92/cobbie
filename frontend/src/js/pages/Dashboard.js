@@ -15,19 +15,24 @@ import AddNodeProjectForm from '../components/project/AddNodeIndex';
 
 import NodeDetailPanel from '../components/project/NodeDetailPanel';
 
+import StatsProjectList from '../components/project/StatsProjectList';
+
+
 import { fetchNodeProject,
-	selectUserProject,
-	resetUpdateState,
-	selectProjectModal,
-	deselectProjectModal,
-	selectUserProjectModal,
-	deselectUserProjectModal,
-	selectNodeProjectModal,
-	deselectNodeProjectModal,
-	selectNodeDetail,
-	deselectNodeDetail,
-	addNodeLike,
-	removeNodeLike  } from '../actions/projectActions';
+ selectUserProject,
+ resetUpdateState,
+ selectProjectModal,
+ deselectProjectModal,
+ selectUserProjectModal,
+ deselectUserProjectModal,
+ selectNodeProjectModal,
+ deselectNodeProjectModal,
+ selectNodeDetail,
+ deselectNodeDetail,
+ addNodeLike,
+ removeNodeLike,
+ selectStatsDetail,
+ deselectStatsDetail  } from '../actions/projectActions';
 
 
 class Dashboard extends React.Component {
