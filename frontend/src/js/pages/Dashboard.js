@@ -15,8 +15,8 @@ import AddNodeProjectForm from '../components/project/AddNodeIndex';
 
 import NodeDetailPanel from '../components/project/NodeDetailPanel';
 
-import { fetchNodeProject, 
-	selectUserProject, 
+import { fetchNodeProject,
+	selectUserProject,
 	resetUpdateState,
 	selectProjectModal,
 	deselectProjectModal,
@@ -50,15 +50,15 @@ class Dashboard extends React.Component {
 
         this.updateTreeData = this.updateTreeData.bind(this);
         // this.state = {
-        //     treeData: [{ title: 'Orbital', children: [ { title: 'Website', children: [{ title: 'React'}], expanded: true}, 
+        //     treeData: [{ title: 'Orbital', children: [ { title: 'Website', children: [{ title: 'React'}], expanded: true},
         //     										{ title: 'Mobile App', children: [
         //     										{ title: 'Android'}, { title: 'iOS'}
         //     										], expanded: true
-        //     										}], expanded: true  
+        //     										}], expanded: true
         //     		}]
-        // }; 
+        // };
     }
- 	
+
  	componentDidUpdate() {
  		// console.log(this.props);
 		const { isProjectSelected, projects, selectedProject_id } = this.props;
@@ -67,7 +67,7 @@ class Dashboard extends React.Component {
 
 		if(isProjectSelected) {
 			this.props.selectUserProject(projects, selectedProject_id);
-			this.props.fetchNodeProject(selectedProject_id);			
+			this.props.fetchNodeProject(selectedProject_id);
 			this.props.cleanUp();
 		}
 	}
@@ -110,7 +110,7 @@ class Dashboard extends React.Component {
 		const { projects, selectedProject_id } = this.props;
 
 		this.props.selectUserProject(projects, selectedProject_id);
-		this.props.fetchNodeProject(selectedProject_id);		
+		this.props.fetchNodeProject(selectedProject_id);
 	}
 
 	updateTreeData(treeData) {
@@ -119,7 +119,7 @@ class Dashboard extends React.Component {
 
     render() {
 
-		const { projects, project_modal, selectedProject_title, 
+		const { projects, project_modal, selectedProject_title,
 			user_modal, node_modal, username, node_detail_modal,
 			treeData } = this.props;
 		const { project_id } = this.props.match.params;
@@ -152,7 +152,7 @@ class Dashboard extends React.Component {
 			marginLeft: '-5px',
 			paddingRight: '20px',
 			paddingLeft: '20px',
-	
+
 		}
 		const sideBarStyle = {
 			position: 'fixed',
@@ -174,7 +174,7 @@ class Dashboard extends React.Component {
 		};
 
 		const addNodeLike = ({ node }) => {
-			if(node.likes.indexOf(username) !== -1) {			
+			if(node.likes.indexOf(username) !== -1) {
 				this.props.removeNodeLike(node._id, username, project_id);
 			}
 			else {
@@ -206,7 +206,7 @@ class Dashboard extends React.Component {
 
 			         </div>
 			         {
-			         	project_id !== undefined ?			         	
+			         	project_id !== undefined ?
 		        		<div>
 		        			<UserProjectList/>
 		        			<div>
@@ -219,7 +219,7 @@ class Dashboard extends React.Component {
 					         		style={customStyles}
 					         		contentLabel="User Modal">
 					         		<AddUserProjectForm />
-					         	</Modal>		        			
+					         	</Modal>
 		        			</div>
 			            </div> :
 			            <div></div>
@@ -238,10 +238,10 @@ class Dashboard extends React.Component {
 					         		style={customStyles}
 					         		contentLabel="Node Modal">
 					         		<AddNodeProjectForm />
-					         	</Modal>							
-							</div>	            	
+					         	</Modal>
+							</div>
 			            </div> :
-			            <div></div>			         	
+			            <div></div>
 			         }
 			        </div>
         			<div class="col-xs-9 col-sm-10 col-sm-offset-2 col-xs-offset-3">
@@ -256,7 +256,7 @@ class Dashboard extends React.Component {
 				                	rowHeight={82}
 				                    treeData={treeData}
 				                    onChange={this.updateTreeData}
-				                    canDrag={false} 
+				                    canDrag={false}
 				                    generateNodeProps={rowInfo => ({
 				                    	buttons: [
 				                    	<button style={{ backgroundColor: 'transparent',
@@ -270,9 +270,9 @@ class Dashboard extends React.Component {
 				                    		<span class="glyphicon glyphicon-thumbs-up"
 				                    			style={{color: rowInfo.node.likes.indexOf(username) !== -1 ?
 				                    								'#73D9FF' : '#515151' }}></span>
-				                    	</button>				                    	
+				                    	</button>
 				                    	]
-				                    })}/>        					
+				                    })}/>
 	        				</div>
 	        				<div>
 	        					<Modal
@@ -285,7 +285,7 @@ class Dashboard extends React.Component {
 	        				</div>
 
         				</div> :
-        				<div></div>
+        				<div id="empty-dash"></div>
         			}
 		            </div>
 	            </div>
