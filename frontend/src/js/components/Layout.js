@@ -8,14 +8,14 @@ export default class Layout extends React.Component {
 
 	render() {
 		const containerStyle = {
-			  padding: '80px 0px',
+			  padding: '0px 0px',
 		}
 		return (
 			<MuiThemeProvider>
 				<div>
 					<Navbar/>
 
-						<div style={containerStyle}>
+						<div>
 							{this.props.children}
 						</div>
 					<Footer/>
