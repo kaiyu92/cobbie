@@ -7085,25 +7085,35 @@ label {
   text-transform: uppercase;
 }
 
-#first-bar button{
-  margin-top: 20px;
+#button{
+  clear: both;
+  text-align: center;
+  display: block;
+  margin: auto;
   font-size: 28px;
   width: 200px;
   height: 80px;
   border: 3px solid white;
   border-radius: 5px;
   background-color: #005656;
+  padding: 20px;
+  color: white;
+  text-decoration: none;
 }
 
-#first-bar button:hover{
-  margin-top: 20px;
+#button:hover{
+  clear: both;
+  display: block;
+  margin-top: auto;
   font-size: 28px;
   color: #005656;
   width: 200px;
   height: 80px;
-  border: 3px solid #005656;
+  border: 3px solid white;
   border-radius: 5px;
   background-color: white;
+  padding: 20px;
+  text-decoration: none;
 }
 
 #image {

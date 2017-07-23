@@ -1,4 +1,6 @@
 import React from "react";
+import { Link } from 'react-router-dom';
+
 import Logo from '../static/img/cobbieicon.png';
 import Logo1 from '../static/img/graphic1.png';
 import Logo2 from '../static/img/graphic2.png';
@@ -33,7 +35,7 @@ export default class Home extends React.Component {
 			  <div id ="first-bar">
 			    <img id="image" src={Logo}/>
 			    <p>The most popular brainstorming application.</p>
-			    <button type="button">Get Started</button>
+			    <Link id="button" to="/register">Get Started</Link>			    
 			  </div>
 				<div id="inbetw-bar">
 					<h1> Productivity & Progress </h1>
