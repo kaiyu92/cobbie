@@ -277,9 +277,9 @@ class Dashboard extends React.Component {
         			<div class="col-xs-9 col-sm-10 col-sm-offset-2 col-xs-offset-3">
 					{
 						project_id !== undefined ?
-						<div>
+						<div style={{ marginTop: '80px' }}>
 							<h3 class="page-header">{selectedProject_title}</h3>
-						    <div style={{ height: 490 }}>
+						    <div style={{ height: 600 }}>
 				                <SortableTree
 				                	style={{ height: '100%',
 				                			  fontSize: '18px'}}
@@ -315,7 +315,7 @@ class Dashboard extends React.Component {
 	        				</div>
 
         				</div> :
-        				<div></div>
+        				<div id="empty-dash"></div>
         			}
 		            </div>
 	            </div>
