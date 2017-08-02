@@ -1,12 +1,11 @@
 import React from 'react';
-import { reduxForm } from 'redux-form';
+import { reduxForm, Field } from 'redux-form';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 import RaisedButton from 'material-ui/RaisedButton';
 import { TextFormField } from '../field/TextFieldComponents';
 import { SelectFormField } from '../field/MenuComponents';
 import MenuItem from 'material-ui/MenuItem';
-
 
 const validate = values => {
 	const errors = {};
@@ -20,40 +19,30 @@ const validate = values => {
 	return errors;
 }
 
-class AddNodeProjectForm extends React.Component {
+class EditNodeProjectForm extends React.Component {
 
 	constructor(props) {
 		super(props);
-		this.closeNodeProjectModal = this.closeNodeProjectModal.bind(this);
+		this.closeEditNodeModal = this.closeEditNodeModal.bind(this);
 	}	
 
-	closeNodeProjectModal() {
-		this.props.deselectNodeProjectModal();
+	closeEditNodeModal() {
+		this.props.deselectEditNodeModal();
 	}
 
-	// componentDidUpdate() {
-
-	// 	const { isUpdated, selectedProject_id } = this.props;
-
-	// 	if(isUpdated) {
-	// 		// this.props.cleanUp();
-	// 		// this.props.dispatch(push('/dashboard'));
-	// 		//this.props.dispatch(push('/dashboard/' + selectedProject_id + '/' + true));
-	// 	}
-	// }
-
 	submitForm(val){
-		const { nodes, selectedProject_id, user } = this.props;
-		this.props.addNewNode(nodes, val.title, val.desc, user, 0, val.prevNodes,
-								selectedProject_id);
+		const { selectedNode, user } = this.props;
+		this.props.editNode({ _id: selectedNode._id, title: val.title,
+								desc: val.desc,
+								previousNode: val.prevNodes}, user);
 	}
 
 	render() {
-		const { handleSubmit, projectError, nodes } = this.props;		
-
+		const { handleSubmit, projectError, nodes, selectedNode } = this.props;		
+		
 		return(
 			<div>
-				<h3>New Idea</h3>
+				<h3>Change Idea</h3>
 				<form onSubmit={ handleSubmit((values) => {
 					this.submitForm(values)
 				})}>
@@ -74,22 +63,23 @@ class AddNodeProjectForm extends React.Component {
 						floatingLabelText="Which Inspiration?">
 						{
 							nodes.map(function(node){
-									return <MenuItem key= { node._id } value={ node._id }
-											primaryText={ node.title } />			        				
+									if(node._id !== selectedNode._id)
+										return <MenuItem key= { node._id } value={ node._id }
+												primaryText={ node.title } />			        				
 							})
 						}
 					</SelectFormField>
 				</div>							
 				<div>
 					<RaisedButton class="RaisedButton"
-								label="Add New Idea"
+								label="Edit Idea"
 								primary type="submit"
 								style={{ width: '100%' }}/>
 				</div>
 				</form>
 				<div>
 					<button class="btn-default" style={{ width: '100%', marginTop: '10px' }}
-					onClick={this.closeNodeProjectModal}>CANCEL</button>
+					onClick={this.closeEditNodeModal}>CANCEL</button>
 				</div>
 				{
 					projectError.length > 0 &&
@@ -102,7 +92,19 @@ class AddNodeProjectForm extends React.Component {
 }
 
 // Decorate with redux-form
-export default reduxForm({
-	form: 'AddNodeProjectForm',
+EditNodeProjectForm = reduxForm({
+	form: 'EditNodeProjectForm',
 	validate
-})(AddNodeProjectForm)
+})(EditNodeProjectForm)
+
+EditNodeProjectForm = connect(
+	state => ({
+		initialValues: {
+			title: state.project.selectedNode.title,
+			desc: state.project.selectedNode.desc,
+			prevNodes: state.project.selectedNode.previousNode
+		}
+	})
+)(EditNodeProjectForm)
+
+export default EditNodeProjectForm

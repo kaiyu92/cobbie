@@ -29,8 +29,8 @@ class AddUserProjectForm extends React.Component {
 	}
 
 	submitForm(val){
-		const { selectedProject_id, user } = this.props;
-		this.props.addUserProject(selectedProject_id, val.username, user);
+		const { projects, selectedProject_id, user } = this.props;
+		this.props.addUserProject(projects, selectedProject_id, val.username, user);
 	}
 
 	render() {

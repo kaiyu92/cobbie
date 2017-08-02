@@ -12,6 +12,7 @@ import NodeProjectList from '../components/project/NodeProjectList';
 import AddProjectForm from '../components/project/AddIndex';
 import AddUserProjectForm from '../components/project/AddUserIndex';
 import AddNodeProjectForm from '../components/project/AddNodeIndex';
+import EditNodeProjectForm from '../components/project/EditNodeIndex';
 
 import NodeDetailPanel from '../components/project/NodeDetailPanel';
 
@@ -31,7 +32,12 @@ import { fetchNodeProject,
 	addNodeLike,
 	removeNodeLike,
 	selectStatsDetail,
-	deselectStatsDetail  } from '../actions/projectActions';
+	deselectStatsDetail,
+	fetchingUserProject,
+	selectTreeData,
+	removeNode, 
+	selectEditNodeModal,
+	deselectEditNodeModal  } from '../actions/projectActions';
 
 
 class Dashboard extends React.Component {
@@ -53,28 +59,38 @@ class Dashboard extends React.Component {
         this.openStatsProjectModal = this.openStatsProjectModal.bind(this);
         this.closeStatsProjectModal = this.closeStatsProjectModal.bind(this);
 
+        this.openEditNodeModal = this.openEditNodeModal.bind(this);
+        this.closeEditNodeModal = this.closeEditNodeModal.bind(this);
+
         this.handleRefresh = this.handleRefresh.bind(this);
 
         this.updateTreeData = this.updateTreeData.bind(this);
-        // this.state = {
-        //     treeData: [{ title: 'Orbital', children: [ { title: 'Website', children: [{ title: 'React'}], expanded: true}, 
-        //     										{ title: 'Mobile App', children: [
-        //     										{ title: 'Android'}, { title: 'iOS'}
-        //     										], expanded: true
-        //     										}], expanded: true  
-        //     		}]
-        // }; 
+
+        const { isProjectSelected, nodes } = this.props;
+		if(isProjectSelected)
+		{
+			console.log(nodes);
+			this.props.selectTreeData(nodes);
+		}
     }
  	
  	componentDidUpdate() {
  		// console.log(this.props);
-		const { isProjectSelected, projects, selectedProject_id } = this.props;
+		const { isProjectSelected, projects, selectedProject_id, username, isUpdated, nodes } = this.props;
 
 		const { project_id } = this.props.match.params;
 
+		if(isUpdated) {
+			this.props.fetchingUserProject(username);
+			this.props.fetchNodeProject(selectedProject_id);
+			this.props.cleanUp();
+		}
+
+		//if one of the project is selected
 		if(isProjectSelected) {
 			this.props.selectUserProject(projects, selectedProject_id);
-			this.props.fetchNodeProject(selectedProject_id);			
+			this.props.fetchNodeProject(selectedProject_id);
+
 			this.props.cleanUp();
 		}
 	}
@@ -119,6 +135,14 @@ class Dashboard extends React.Component {
 		this.props.deselectStatsDetail();
 	}
 
+	openEditNodeModal() {
+		this.props.selectEditNodeModal();
+	}
+
+	closeEditNodeModal() {
+		this.props.deselectEditNodeModal();
+	}
+
 	handleRefresh(e) {
 		e.preventDefault();
 
@@ -136,7 +160,7 @@ class Dashboard extends React.Component {
 
 		const { projects, project_modal, selectedProject_title, 
 			user_modal, node_modal, username, node_detail_modal,
-			stats_modal ,treeData } = this.props;
+			stats_modal ,treeData, edit_node_modal } = this.props;
 		const { project_id } = this.props.match.params;
 
 		const customStyles = {
@@ -194,6 +218,27 @@ class Dashboard extends React.Component {
 			}
 			else {
 				this.props.addNodeLike(node._id, username, project_id);
+			}
+		};
+
+		const deleteNode = ({ node }) => {
+			if(node.created_by !== username) {
+				alert('Warning! You\'re not the owner of this idea!');
+			}
+			else if(node.primaryNode === 1) {
+				alert('Warning! You\'re not allowed to remove the primary node!');
+			}
+			else {
+				this.props.removeNode(node._id);
+			}
+		};
+
+		const editNode = ({ node }) => {
+			if(node.created_by !== username) {
+				alert('Warning! You\'re not the owner of this idea!');
+			}
+			else {
+				this.props.selectEditNodeModal(node);
 			}
 		};
 
@@ -295,6 +340,16 @@ class Dashboard extends React.Component {
 				                    		<span class="glyphicon glyphicon-info-sign"></span>
 				                    	</button>,
 				                    	<button style={{ backgroundColor: 'transparent',
+				                    					 borderRadius: '10px',}}
+				                    			onClick={() => editNode(rowInfo)}>
+				                    		<span class="glyphicon glyphicon-pencil"></span>
+				                    	</button>,
+				                    	<button style={{ backgroundColor: 'transparent',
+				                    					 borderRadius: '10px',}}
+				                    			onClick={() => deleteNode(rowInfo)}>
+				                    		<span class="glyphicon glyphicon-remove"></span>
+				                    	</button>,
+				                    	<button style={{ backgroundColor: 'transparent',
 				                    					 borderRadius: '10px'}}
 				                    			onClick={() => addNodeLike(rowInfo)}>
 				                    		<span class="glyphicon glyphicon-thumbs-up"
@@ -313,7 +368,15 @@ class Dashboard extends React.Component {
 	        						<NodeDetailPanel />
 	        					</Modal>
 	        				</div>
-
+	        				<div>
+	        					<Modal
+	        						isOpen={edit_node_modal}
+	        						onRequestClose={this.closeEditNodeModal}
+	        						style={customStyles}
+	        						contentLabel="Edit Node">
+	        						<EditNodeProjectForm />
+	        					</Modal>
+	        				</div>
         				</div> :
         				<div id="empty-dash"></div>
         			}
@@ -339,13 +402,18 @@ const mapStateToProps = (state) => {
 		node_detail_modal: state.project.node_detail_modal,
 		treeData: state.project.treeData,
 		nodes: state.project.nodes,
-		stats_modal: state.project.stats_modal
+		stats_modal: state.project.stats_modal,
+		edit_node_modal: state.project.edit_node_modal,
+		isUpdated: state.project.isUpdated,
 	};
 };
 
 const mapDispatchToProps = (dispatch) => {
 	return {
 		actions: bindActionCreators({ }, dispatch),
+		fetchingUserProject: (username) => {
+			dispatch(fetchingUserProject(username));
+		},
 		fetchNodeProject: (project_id) => {
 			dispatch(fetchNodeProject(project_id));
 		},
@@ -358,6 +426,12 @@ const mapDispatchToProps = (dispatch) => {
 		removeNodeLike: (node_id, username, project_id) => {
 			dispatch(removeNodeLike(node_id, username, project_id));
 		},
+		selectTreeData: (nodes) => {
+			dispatch(selectTreeData(nodes));
+		},
+		removeNode: (node_id) => {
+			dispatch(removeNode(node_id));
+		},
 		cleanUp: () => dispatch(resetUpdateState()),
 		selectProjectModal: () => dispatch(selectProjectModal()),
 		deselectProjectModal: () => dispatch(deselectProjectModal()),
@@ -369,6 +443,8 @@ const mapDispatchToProps = (dispatch) => {
 		deselectNodeDetail: () => dispatch(deselectNodeDetail()),
 		selectStatsDetail: () => dispatch(selectStatsDetail()),
 		deselectStatsDetail: () => dispatch(deselectStatsDetail()),
+		selectEditNodeModal: (node) => dispatch(selectEditNodeModal(node)),
+		deselectEditNodeModal: () => dispatch(deselectEditNodeModal()),
 	};
 };
 
