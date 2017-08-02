@@ -6,6 +6,7 @@ class NodeProjectList extends React.Component {
 
     render() {
     	const { nodes } = this.props;
+ 
 		const navSideBarStyle = {
 			marginRight: '-21px',
 			marginBottom: '20px',
@@ -35,7 +36,8 @@ class NodeProjectList extends React.Component {
 //redux
 const mapStateToProps = (state) => {
 	return {
-		nodes: state.project.nodes
+		nodes: state.project.nodes,
+		isUpdated: state.project.isUpdated,
 	};
 };
 

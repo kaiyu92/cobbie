@@ -10,15 +10,16 @@ const mapStateToProps = (state) => {
 		user: state.user.userObject.user,
 		projectError: state.project.error,
 		isUpdated: state.project.isUpdated,
-		selectedProject_id: state.project.selectedProject_id
+		selectedProject_id: state.project.selectedProject_id,
+		projects: state.project.projects,
 	};
 };
 
 const mapDispatchToProps = (dispatch) => {
 	return {
 		actions: bindActionCreators({ }, dispatch),
-		addUserProject: (project_id, targetUser, user) => {
-			dispatch(addUserProject(project_id, targetUser, user));
+		addUserProject: (projects, project_id, targetUser, user) => {
+			dispatch(addUserProject(projects, project_id, targetUser, user));
 		},
 		cleanUp: () => dispatch(resetUpdateState()),
 		deselectUserProjectModal: () => dispatch(deselectUserProjectModal())

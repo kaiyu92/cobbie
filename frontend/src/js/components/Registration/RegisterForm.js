@@ -20,12 +20,13 @@ const validate = values => {
 class RegisterForm extends React.Component {
 
 	submitForm(val){
+		const { reset } = this.props;
 		this.props.attemptRegister(val);
+		reset();
 	}
 
 	render() {
 		const { successMsg, regError, handleSubmit } = this.props;
-
 		return(
 			<div>
 				{

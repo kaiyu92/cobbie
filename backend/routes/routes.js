@@ -3,6 +3,9 @@ var User = require('../models/User');
 var Node = require('../models/Node');
 var Project = require('../models/Project');
 
+//Password hashing
+var passwordHash = require('password-hash');
+
 //Get the router
 var router = express.Router();
 
@@ -58,7 +61,11 @@ router.route('/addUser').post(function(req, res){
 
 			//Set the user attributes
 			newUser.user = req.body.user;
-			newUser.password = req.body.password;
+
+			//hash password
+			var hashedPassword = passwordHash.generate(req.body.password);
+			newUser.password = hashedPassword;
+
 			newUser.email = req.body.email;
 			newUser.firstName = req.body.firstName;
 			newUser.lastName = req.body.lastName;
@@ -94,7 +101,7 @@ router.route('/login').post(function(req, res){
 				message: 'User does not exist'
 			});
 		}
-		else if(password === user.password) {
+		else if(passwordHash.verify(password, user.password)) {
 			res.json({
 				status: 'success',
 				user: user,
@@ -239,9 +246,48 @@ router.route('/addNode').post(function(req, res){
 			res.json({ 
 				status: 'success',
 				message: 'Successfully created a new node',
-				id: result._id
+				node: result
 			})
 	});
+});
+
+//DELETE an existing node (using POST at http://localhost:3001/removeNode/:node_id)
+router.route('/removeNode/:node_id').delete(function(req, res) {
+	Node.remove({ $or: [{ _id: req.params.node_id }, { previousNode: req.params.node_id }] }, function(err) {
+		if(err)
+			res.json({
+				status: 'fail',
+				message: 'Sorry, unable to remove this node'
+			})
+		else
+			res.json({ 
+				status: 'success',
+				message: 'Successfully removed this node'
+			})
+	});
+});
+
+//UPDATE an existing node (using PUT at http://localhost:3001/updateNode/:node_id)
+router.route('/updateNode/:node_id').put(function(req, res) {
+	Node.findByIdAndUpdate(req.params.node_id, 
+							{ $set: { previousNode: req.body.previousNode,
+									  desc: req.body.desc,
+									  title: req.body.title
+									}
+							},
+							{ new: true }, function(err, node) {
+								if(err)
+									res.json({
+										status: 'fail',
+										message: 'Sorry, unable to update this node'
+									})
+									//res.send(err);
+								else
+									res.json({ 
+										status: 'success',
+										message: 'Successfully updated this node'
+									})
+							})
 });
 
 //Add like to the node ...
@@ -263,7 +309,6 @@ router.route('/addLike/:node_id/users/:user').put(function(req, res) {
 									})
 							})
 });
-
 
 //Remove like to the node ...
 //PUT update node (using PUT at http://localhost:3001/removeLike/:node_id/users/:user)

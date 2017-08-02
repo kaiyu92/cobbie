@@ -1,11 +1,13 @@
 import React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import { selectUserProject, resetUpdateState, fetchingUserProject } from '../../actions/projectActions';
 
 class UserProjectList extends React.Component {
 
     render() {
     	const { project_users } = this.props;
+    	
 		const navSideBarStyle = {
 			marginRight: '-21px',
 			marginBottom: '20px',
@@ -35,18 +37,20 @@ class UserProjectList extends React.Component {
 //redux
 const mapStateToProps = (state) => {
 	return {
-		project_users: state.project.project_users
+		project_users: state.project.project_users,
+		isUpdated: state.project.isUpdated,
 	};
 };
 
-// const mapDispatchToProps = (dispatch) => {
-// 	return {
-// 		actions: bindActionCreators({ }, dispatch),
-// 		selectUserProject: (projects, project_id) => {
-// 			dispatch(selectUserProject(projects, project_id));
-// 		}
-// 	};
-// };
+const mapDispatchToProps = (dispatch) => {
+	return {
+		actions: bindActionCreators({ }, dispatch),
+		selectUserProject: (projects, project_id) => {
+			dispatch(selectUserProject(projects, project_id));
+		},
+		cleanUp: () => dispatch(resetUpdateState()),
+	};
+};
 
 
 export default connect(mapStateToProps)(UserProjectList);

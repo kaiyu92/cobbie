@@ -14,8 +14,17 @@ export const ADD_PROJECT_FAIL = 'ADD_PROJECT_FAIL';
 export const UPDATE_PROJECT_SUCCESS = 'UPDATE_PROJECT_SUCCESS';
 export const UPDATE_PROJECT_FAIL = 'UPDATE_PROJECT_FAIL';
 
+export const UPDATE_USER_PROJECT_SUCCESS = 'UPDATE_USER_PROJECT_SUCCESS';
+export const UPDATE_NODE_PROJECT_SUCCESS = 'UPDATE_NODE_PROJECT_SUCCESS';
+
 export const ADD_NODE_SUCCESS = 'ADD_NODE_SUCCESS';
 export const ADD_NODE_FAIL = 'ADD_NODE_FAIL';
+
+export const REMOVE_NODE_SUCCESS = 'REMOVE_NODE_SUCCESS';
+export const REMOVE_NODE_FAIL = 'REMOVE_NODE_FAIL';
+
+export const EDIT_NODE_SUCCESS = 'EDIT_NODE_SUCCESS';
+export const EDIT_NODE_FAIL = 'EDIT_NODE_FAIL';
 
 export const RESET_UPDATE_STATE = 'RESET_UPDATE_STATE';
 export const RESET_PROJECT_STATE = 'RESET_PROJECT_STATE';
@@ -38,6 +47,9 @@ export const DESELECT_NODE_DETAIL_MODAL = 'DESELECT_NODE_DETAIL_MODAL';
 
 export const SELECT_STATS_MODAL = 'SELECT_STATS_MODAL';
 export const DESELECT_STATS_MODAL = 'DESELECT_STATS_MODAL';
+
+export const SELECT_EDIT_NODE_MODAL = 'SELECT_EDIT_NODE_MODAL';
+export const DESELECT_EDIT_NODE_MODAL = 'DESELECT_EDIT_NODE_MODAL';
 
 export const ADD_NODE_LIKE = 'ADD_NODE_LIKE';
 export const REMOVE_NODE_LIKE = 'REMOVE_NODE_LIKE';
@@ -104,7 +116,7 @@ export function addNewProject(proj_title, proj_desc, deadlineDate, user,
 				})
 				.end(function(err, res){
 					if(res.body.status === 'success')
-						dispatch(addNewNode(node_title, node_desc, user, 1, 
+						dispatch(addNewNode(null, node_title, node_desc, user, 1, 
 											null, res.body.id));
 					else
 						dispatch(addProjectFailure(res.body.message));
@@ -121,7 +133,7 @@ export function addProjectFailure(error) {
 }
 
 //Update project with more user
-export function addUserProject(project_id, targerUser, username) {
+export function addUserProject(projects, project_id, targerUser, username) {
 	return dispatch => {
 		return Request.put(ROOT_URL + '/addUserProject/' + project_id)
 				.send({
@@ -129,8 +141,15 @@ export function addUserProject(project_id, targerUser, username) {
 				})
 				.end(function(err, res){
 					if(res.body.status === 'success') {
-						dispatch(fetchingUserProject(username));
-						dispatch(updateProjectSuccess(res.body.message));
+						
+						for(let i = 0; i < projects.length; i++)
+						{
+						    if(projects[i]._id === project_id)
+						    {
+						    	projects[i].users.push(targerUser);
+						    	dispatch(updateUserProjectSuccess(projects[i].users));
+						    }
+						}							
 					}
 					else
 						dispatch(updateProjectFailure(res.body.message));
@@ -139,22 +158,38 @@ export function addUserProject(project_id, targerUser, username) {
 }
 
 //Update project with more node
-export function addNodeProject(project_id, node_id, user) {
+export function addNodeProject(nodes, project_id, node, user) {
 	return dispatch => {
 		return Request.put(ROOT_URL + '/addNodeProject/' + project_id)
 				.send({
-					node_id: node_id			
+					node_id: node._id			
 				})
 				.end(function(err, res){
 					if(res.body.status === 'success')
 					{
-						dispatch(fetchingUserProject(user));
-						dispatch(updateProjectSuccess(res.body.message));
+						//adding primary node to the project
+						if(nodes === null) {
+							//dispatch(fetchingUserProject(user));
+							dispatch(updateProjectSuccess(res.body.message));
+						}
+						else {
+							nodes.push(node);
+							dispatch(updateNodeProjectSuccess(nodes));								
+						}
+
 					}
 					else
 						dispatch(updateProjectFailure(res.body.message));
 				});
 	}
+}
+
+export function updateUserProjectSuccess(users) {
+	return { type: UPDATE_USER_PROJECT_SUCCESS, payload: users }
+}
+
+export function updateNodeProjectSuccess(nodes) {
+	return { type: UPDATE_NODE_PROJECT_SUCCESS, payload: nodes }
 }
 
 export function updateProjectSuccess(msg) {
@@ -166,7 +201,7 @@ export function updateProjectFailure(error) {
 }
 
 //Add new Node Process
-export function addNewNode(node_title, node_desc,
+export function addNewNode(nodes, node_title, node_desc,
 							user, primNode, prevNode, proj_id) {
 
 	const data = {};
@@ -198,7 +233,10 @@ export function addNewNode(node_title, node_desc,
 				.end(function(err, res){
 					if(res.body.status === 'success')
 					{
-						dispatch(addNodeProject(proj_id, res.body.id, user));
+						if(primNode === 1)
+							dispatch(addNodeProject(null, proj_id, res.body.node, user));
+						else
+							dispatch(addNodeProject(nodes, proj_id, res.body.node, user));
 					}
 					else
 						dispatch(addNodeFailure(res.body.message));
@@ -212,6 +250,53 @@ export function addNodeSuccess(msg) {
 
 export function addNodeFailure(error) {
 	return { type: ADD_NODE_FAIL, payload: error }
+}
+
+//remove node
+export function removeNode(node_id) {
+	return dispatch => {
+		return Request.delete(ROOT_URL + '/removeNode/' + node_id)
+				.end(function(err, res){
+					if(res.body.status === 'success')
+						dispatch(removeNodeSuccess(res.body.message));
+					else
+						dispatch(removeNodeFailure(res.body.message));
+				});
+	}	
+}
+
+export function removeNodeSuccess(msg) {
+	return { type: REMOVE_NODE_SUCCESS, payload: msg }
+}
+
+export function removeNodeFailure(error) {
+	return { type: REMOVE_NODE_FAIL, payload: msg }
+}
+
+export function editNode(node, user) {
+
+	return dispatch => {
+		return Request.put(ROOT_URL + '/updateNode/' + node._id)
+				.send({
+					title: node.title,
+					desc: node.desc,
+					previousNode: node.previousNode		
+				})
+				.end(function(err, res){
+					if(res.body.status === 'success')
+						dispatch(editNodeSuccess(res.body.message));
+					else
+						dispatch(editNodeFailure(res.body.message));
+				});
+	}
+}
+
+export function editNodeSuccess(msg) {
+	return { type: EDIT_NODE_SUCCESS, payload: msg }
+}
+
+export function editNodeFailure(error) {
+	return { type: EDIT_NODE_SUCCESS, payload: error }
 }
 
 export function selectUserProject(projects, project_id)
@@ -252,6 +337,15 @@ export function deselectNodeProjectModal() {
 
 export function selectState(project) {
 	return { type: SET_SELECTING_STATE, payload: project }
+}
+
+//EDIT NODE MODAL
+export function selectEditNodeModal(node) {
+	return { type: SELECT_EDIT_NODE_MODAL, payload: node  }
+}
+
+export function deselectEditNodeModal() {
+	return { type: DESELECT_EDIT_NODE_MODAL }
 }
 
 //Nodes -> TreeData
