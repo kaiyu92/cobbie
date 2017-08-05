@@ -18,10 +18,10 @@ class Navbar extends React.Component{
 	logOut(e) {
 		e.preventDefault();
 		const targetLink = e.target.getAttribute("href");
-		
+
 		this.props.resetProjectState();
 		this.props.attemptLogout();
-		this.props.transitNext(targetLink);		
+		this.props.transitNext(targetLink);
 	}
 
 	resetSignUp(e) {
@@ -29,7 +29,7 @@ class Navbar extends React.Component{
 		const targetLink = e.target.getAttribute("href");
 
 		this.props.resetSignUp();
-		this.props.transitNext(targetLink);				
+		this.props.transitNext(targetLink);
 	}
 
 	render() {
@@ -51,9 +51,10 @@ class Navbar extends React.Component{
 		          <ul class="nav navbar-nav">
 		            <li><Link to="/" onClick={this.resetSignUp}>Home</Link></li>
 		            <li><Link to="/about" onClick={this.resetSignUp}>About</Link></li>
+		            <li><Link to="/guide" onClick={this.resetSignUp}>Getting started</Link></li>
 		            <li><Link to="/dashboard" onClick={this.resetSignUp}>Dashboard</Link></li>
-		          </ul>		          
-		          	{		          		
+		          </ul>
+		          	{
 		          		isLoggedIn ? (
 		          			<ul class="nav navbar-nav navbar-right">
 		          				<li><a href="#">Welcome, {username}</a></li>
@@ -62,10 +63,10 @@ class Navbar extends React.Component{
 		          		) : (
 		          			<ul class="nav navbar-nav navbar-right">
 		            			<li><Link to="/login" onClick={this.resetSignUp}>Login</Link></li>
-		            			<li><Link to="/register" onClick={this.resetSignUp}>Get Started</Link></li>
+		            			<li><Link to="/register" onClick={this.resetSignUp}>Register</Link></li>
 		            		</ul>
-		            	)		            	
-		          	}		          
+		            	)
+		          	}
 		        </div>
 		      </div>
 		    </nav>

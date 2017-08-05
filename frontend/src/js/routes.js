@@ -14,6 +14,7 @@ import PrivateRoute from './components/PrivateRoute';
 import Home from './pages/Home';
 import About from './pages/About';
 import Login from './pages/Login';
+import Guide from './pages/Guide';
 import Dashboard from './pages/Dashboard';
 import Registration from './pages/Registration';
 
@@ -47,13 +48,14 @@ export default class routes extends React.Component {
 				  	<Switch>
 				      <Route exact path="/" component={Home}/>
 				      <Route path="/about" component={About}/>
+							<Route path="/guide" component={Guide}/>
 				      <Route path="/login" component={Login}/>
 				      <Route path="/register" component={Registration}/>
 				      <PrivateRoute path="/dashboard" component={DashboardRoutes}/>
 				    </Switch>
 			    </Layout>
 			  </ConnectedRouter>
-			</Provider>  
+			</Provider>
 		);
 	}
 }
