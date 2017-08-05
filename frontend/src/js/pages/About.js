@@ -36,8 +36,8 @@ export default class About extends React.Component {
 						<p>Our group realised this problem when we were trying to decide what we would do a software development project.
 						Whenever we meet up through Skype or physically, we had no progress. However, we started to think through what was the problem with
 						our approach, and we realised that we had many good ideas, yet they were very shallow and didnt go
-						in-depth to work on it further. We kept switching ideas which resulted in many feasible options yet no one choice that we were
-						confident of. The meetings led to confusion and was demoralising for us </p>
+						in-depth to work on it further. We kept switching ideas which resulted in many feasible options yet there was no one choice that we were
+						confident of. The meetings led to confusion and was demoralising for us. </p>
 						<p>We pinned point this issue, hence decided to design a web application to solve this problem. </p>
 					</div>
 					<br />
@@ -51,19 +51,19 @@ export default class About extends React.Component {
 							<div id="features-one">
 								<h3> Brainstorm Tree </h3>
 								<p>The main feature of our app is the using a tree to illustrate all your recorded ideas. Having a tree helps you to keep track of
-								how many ideas you have and see whether a certain is a new one or has it been built upon an existing idea.</p>
+								how many ideas you have and see whether a certain idea is a new one or has it been built upon an existing idea.</p>
 							</div>
 							<div id="features-two">
 								<h3>Voting System</h3>
 								<p> The voting system helps to keep track of sentiments among your team. Each idea can be given a thumbs-up by
 								each team member. If an idea is greatly supported, you can identify it through the number of votes and that
-								should be the idea that your team should start building onto</p>
+								should be the idea that your team should start building on.</p>
 							</div>
 							<div id="features-three">
 								<h3>Statistics Output</h3>
 								<p>A summary report can be access anytime to better understand the progress of your brainstorm. The report
 								includes the number of ideas, the most liked idea and many more. This information can help you to decide which
-								direction your team is heading and allow you facilitate if necessary </p>
+								direction your team is heading and allow you facilitate if necessary. </p>
 							</div>
 					</div>
 					</div>

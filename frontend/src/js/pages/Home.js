@@ -35,7 +35,7 @@ export default class Home extends React.Component {
 			  <div id ="first-bar">
 			    <img id="image" src={Logo}/>
 			    <p>The most popular brainstorming application.</p>
-			    <Link id="button" to="/register">Get Started</Link>			    
+			    <Link id="button" to="/register">Get Started</Link>
 			  </div>
 				<div id="inbetw-bar">
 					<h1> Productivity & Progress </h1>
