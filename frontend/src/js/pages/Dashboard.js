@@ -12,14 +12,15 @@ import NodeProjectList from '../components/project/NodeProjectList';
 import AddProjectForm from '../components/project/AddIndex';
 import AddUserProjectForm from '../components/project/AddUserIndex';
 import AddNodeProjectForm from '../components/project/AddNodeIndex';
+import AddFeedbackForm from '../components/project/AddFeedbackIndex';
 import EditNodeProjectForm from '../components/project/EditNodeIndex';
 
 import NodeDetailPanel from '../components/project/NodeDetailPanel';
 
 import StatsProjectList from '../components/project/StatsProjectList';
 
-import { fetchNodeProject, 
-	selectUserProject, 
+import { fetchNodeProject,
+	selectUserProject,
 	resetUpdateState,
 	selectProjectModal,
 	deselectProjectModal,
@@ -35,9 +36,11 @@ import { fetchNodeProject,
 	deselectStatsDetail,
 	fetchingUserProject,
 	selectTreeData,
-	removeNode, 
+	removeNode,
 	selectEditNodeModal,
-	deselectEditNodeModal  } from '../actions/projectActions';
+	deselectEditNodeModal,
+  selectFeedbackNode,
+	deselectFeedbackNode } from '../actions/projectActions';
 
 
 class Dashboard extends React.Component {
@@ -62,6 +65,9 @@ class Dashboard extends React.Component {
         this.openEditNodeModal = this.openEditNodeModal.bind(this);
         this.closeEditNodeModal = this.closeEditNodeModal.bind(this);
 
+				this.openFeedbackModal = this.openFeedbackModal.bind(this);
+				this.closeFeedbackModal = this.closeFeedbackModal.bind(this);
+
         this.handleRefresh = this.handleRefresh.bind(this);
 
         this.updateTreeData = this.updateTreeData.bind(this);
@@ -73,7 +79,7 @@ class Dashboard extends React.Component {
 			this.props.selectTreeData(nodes);
 		}
     }
- 	
+
  	componentDidUpdate() {
  		// console.log(this.props);
 		const { isProjectSelected, projects, selectedProject_id, username, isUpdated, nodes } = this.props;
@@ -143,13 +149,21 @@ class Dashboard extends React.Component {
 		this.props.deselectEditNodeModal();
 	}
 
+	openFeedbackModal() {
+		this.props.selectFeedbackNode();
+	}
+
+	closeFeedbackModal() {
+		this.props.deselectFeedbackNode();
+	}
+
 	handleRefresh(e) {
 		e.preventDefault();
 
 		const { projects, selectedProject_id } = this.props;
 
 		this.props.selectUserProject(projects, selectedProject_id);
-		this.props.fetchNodeProject(selectedProject_id);		
+		this.props.fetchNodeProject(selectedProject_id);
 	}
 
 	updateTreeData(treeData) {
@@ -158,9 +172,9 @@ class Dashboard extends React.Component {
 
     render() {
 
-		const { projects, project_modal, selectedProject_title, 
+		const { projects, project_modal, selectedProject_title,
 			user_modal, node_modal, username, node_detail_modal,
-			stats_modal ,treeData, edit_node_modal } = this.props;
+			stats_modal ,treeData, edit_node_modal, feedback_node_modal } = this.props;
 		const { project_id } = this.props.match.params;
 
 		const customStyles = {
@@ -191,7 +205,7 @@ class Dashboard extends React.Component {
 			marginLeft: '-5px',
 			paddingRight: '20px',
 			paddingLeft: '20px',
-	
+
 		}
 		const sideBarStyle = {
 			position: 'fixed',
@@ -213,7 +227,7 @@ class Dashboard extends React.Component {
 		};
 
 		const addNodeLike = ({ node }) => {
-			if(node.likes.indexOf(username) !== -1) {			
+			if(node.likes.indexOf(username) !== -1) {
 				this.props.removeNodeLike(node._id, username, project_id);
 			}
 			else {
@@ -242,6 +256,10 @@ class Dashboard extends React.Component {
 			}
 		};
 
+		const commentNode = ({ node }) => {
+			this.props.selectFeedbackNode(node._id);
+		};
+
         return (
         	<div class="container-fluid">
         		<div class="row">
@@ -249,14 +267,14 @@ class Dashboard extends React.Component {
 			        <div>
 			        	<a href="#" onClick={this.handleRefresh}>
 			        		<span class ="glyphicon glyphicon-refresh"></span>
-			        	</a> &nbsp;		        	
-			        
+			        	</a> &nbsp;
+
 			        {
-			        	project_id !== undefined ?			        	
+			        	project_id !== undefined ?
 			        		<a href="#" onClick={this.openStatsProjectModal}>
-			        			<span class ="glyphicon glyphicon-signal"></span>
+			        			<span class ="glyphicon glyphicon-stats"></span>
 			        		</a>
-			        	 :<div></div>	
+			        	 :<div></div>
 			        }
 			        <Modal
 			        	isOpen={stats_modal}
@@ -281,7 +299,7 @@ class Dashboard extends React.Component {
 
 			         </div>
 			         {
-			         	project_id !== undefined ?			         	
+			         	project_id !== undefined ?
 		        		<div>
 		        			<UserProjectList/>
 		        			<div>
@@ -294,7 +312,7 @@ class Dashboard extends React.Component {
 					         		style={customStyles}
 					         		contentLabel="User Modal">
 					         		<AddUserProjectForm />
-					         	</Modal>		        			
+					         	</Modal>
 		        			</div>
 			            </div> :
 			            <div></div>
@@ -313,10 +331,10 @@ class Dashboard extends React.Component {
 					         		style={customStyles}
 					         		contentLabel="Node Modal">
 					         		<AddNodeProjectForm />
-					         	</Modal>							
-							</div>	            	
+					         	</Modal>
+							</div>
 			            </div> :
-			            <div></div>			         	
+			            <div></div>
 			         }
 			        </div>
         			<div class="col-xs-9 col-sm-10 col-sm-offset-2 col-xs-offset-3">
@@ -331,7 +349,7 @@ class Dashboard extends React.Component {
 				                	rowHeight={82}
 				                    treeData={treeData}
 				                    onChange={this.updateTreeData}
-				                    canDrag={false} 
+				                    canDrag={false}
 				                    generateNodeProps={rowInfo => ({
 				                    	buttons: [
 				                    	<button style={{ backgroundColor: 'transparent',
@@ -346,8 +364,13 @@ class Dashboard extends React.Component {
 				                    	</button>,
 				                    	<button style={{ backgroundColor: 'transparent',
 				                    					 borderRadius: '10px',}}
+				                    			onClick={() => commentNode(rowInfo)}>
+				                    		<span class="glyphicon glyphicon-comment"></span>
+				                    	</button>,
+															<button style={{ backgroundColor: 'transparent',
+				                    					 borderRadius: '10px',}}
 				                    			onClick={() => deleteNode(rowInfo)}>
-				                    		<span class="glyphicon glyphicon-remove"></span>
+				                    		<span class="glyphicon glyphicon-trash"></span>
 				                    	</button>,
 				                    	<button style={{ backgroundColor: 'transparent',
 				                    					 borderRadius: '10px'}}
@@ -355,9 +378,9 @@ class Dashboard extends React.Component {
 				                    		<span class="glyphicon glyphicon-thumbs-up"
 				                    			style={{color: rowInfo.node.likes.indexOf(username) !== -1 ?
 				                    								'#73D9FF' : '#515151' }}></span>
-				                    	</button>				                    	
+				                    	</button>
 				                    	]
-				                    })}/>        					
+				                    })}/>
 	        				</div>
 	        				<div>
 	        					<Modal
@@ -375,6 +398,15 @@ class Dashboard extends React.Component {
 	        						style={customStyles}
 	        						contentLabel="Edit Node">
 	        						<EditNodeProjectForm />
+	        					</Modal>
+	        				</div>
+									<div>
+	        					<Modal
+	        						isOpen={feedback_node_modal}
+	        						onRequestClose={this.closeFeedbackModal}
+	        						style={customStyles}
+	        						contentLabel="Comment Node">
+											<AddFeedbackForm />
 	        					</Modal>
 	        				</div>
         				</div> :
@@ -405,6 +437,7 @@ const mapStateToProps = (state) => {
 		stats_modal: state.project.stats_modal,
 		edit_node_modal: state.project.edit_node_modal,
 		isUpdated: state.project.isUpdated,
+		feedback_node_modal: state.project.feedback_node_modal,
 	};
 };
 
@@ -445,6 +478,8 @@ const mapDispatchToProps = (dispatch) => {
 		deselectStatsDetail: () => dispatch(deselectStatsDetail()),
 		selectEditNodeModal: (node) => dispatch(selectEditNodeModal(node)),
 		deselectEditNodeModal: () => dispatch(deselectEditNodeModal()),
+		selectFeedbackNode: (node_id) => dispatch(selectFeedbackNode(node_id)),
+		deselectFeedbackNode: () => dispatch(deselectFeedbackNode()),
 	};
 };
 
