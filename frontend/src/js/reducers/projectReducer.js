@@ -1,9 +1,9 @@
 import { FETCH_PROJECT_SUCCESS, FETCH_PROJECT_FAILURE,
-		FETCH_NODE_SUCCESS, FETCH_NODE_FAIL, 
+		FETCH_NODE_SUCCESS, FETCH_NODE_FAIL,
 		ADD_PROJECT_SUCCESS, ADD_PROJECT_FAIL,
 		UPDATE_PROJECT_SUCCESS, UPDATE_PROJECT_FAIL,
 		UPDATE_USER_PROJECT_SUCCESS, UPDATE_NODE_PROJECT_SUCCESS,
-		ADD_NODE_SUCCESS, ADD_NODE_FAIL, 
+		ADD_NODE_SUCCESS, ADD_NODE_FAIL,
 		REMOVE_NODE_SUCCESS, REMOVE_NODE_FAIL,
 		RESET_UPDATE_STATE, SELECT_USER_PROJECT,
 		SET_SELECTING_STATE, SELECT_PROJECT_MODAL,
@@ -13,7 +13,9 @@ import { FETCH_PROJECT_SUCCESS, FETCH_PROJECT_FAILURE,
 		SELECT_NODE_PROJECT_MODAL, DESELECT_NODE_PROJECT_MODAL,
 		SELECT_NODE_DETAIL_MODAL, DESELECT_NODE_DETAIL_MODAL,
 		SELECT_TREE_DATA, RESET_PROJECT_STATE, EDIT_NODE_SUCCESS,
-		EDIT_NODE_FAIL, SELECT_EDIT_NODE_MODAL, DESELECT_EDIT_NODE_MODAL } from '../actions/projectActions';
+		EDIT_NODE_FAIL, SELECT_EDIT_NODE_MODAL, DESELECT_EDIT_NODE_MODAL,
+	 	ADD_NODE_FEEDBACK, FETCH_NODE_FEEDBACK,
+		SELECT_FEEDBACK_NODE_MODAL, DESELECT_FEEDBACK_NODE_MODAL } from '../actions/projectActions';
 
 const initialState = {
 	projects:[],
@@ -22,7 +24,7 @@ const initialState = {
 	isUpdated: false,
 	isProjectSelected: false,
 	selectedProject_id: '',
-	selectedProject_title: '', 
+	selectedProject_title: '',
 	project_users: [],
 	project_modal: false,
 	user_modal: false,
@@ -30,7 +32,10 @@ const initialState = {
 	node_detail_modal: false,
 	stats_modal: false,
 	edit_node_modal: false,
+	feedback_node_modal: false,
+	node_feedbacks: [],
 	selectedNode: {},
+	selectedNode_id: '',
 	treeData: [],
 };
 
@@ -38,7 +43,7 @@ export default function projectReducer(state=initialState, action) {
 	switch(action.type) {
 
 		case FETCH_PROJECT_SUCCESS:
-			return Object.assign({}, state, { 
+			return Object.assign({}, state, {
 				projects: action.payload
 			});
 
@@ -48,13 +53,18 @@ export default function projectReducer(state=initialState, action) {
 			});
 
 		case FETCH_NODE_SUCCESS:
-			return Object.assign({}, state, { 
+			return Object.assign({}, state, {
 				nodes: action.payload
 			});
 
 		case FETCH_NODE_FAIL:
 			return Object.assign({}, state, {
 				error: action.payload
+			});
+
+		case FETCH_NODE_FEEDBACK:
+			return Object.assign({}, state, {
+				node_feedbacks: action.payload
 			});
 
 		case ADD_PROJECT_SUCCESS:
@@ -76,6 +86,7 @@ export default function projectReducer(state=initialState, action) {
 				user_modal: false,
 				node_modal: false,
 				stats_modal: false,
+				feedback_node_modal: false,
 			});
 
 		case UPDATE_PROJECT_FAIL:
@@ -92,7 +103,8 @@ export default function projectReducer(state=initialState, action) {
 				user_modal: false,
 				node_modal: false,
 				stats_modal: false,
-			});	
+				feedback_node_modal: false,
+			});
 
 		case UPDATE_NODE_PROJECT_SUCCESS:
 			return Object.assign({}, state, {
@@ -103,7 +115,8 @@ export default function projectReducer(state=initialState, action) {
 				user_modal: false,
 				node_modal: false,
 				stats_modal: false,
-			});					
+				feedback_node_modal: false,
+			});
 
 		case ADD_NODE_SUCCESS:
 			return Object.assign({}, state, {
@@ -114,7 +127,13 @@ export default function projectReducer(state=initialState, action) {
 		case ADD_NODE_FAIL:
 			return Object.assign({}, state, {
 				error: action.payload
-			});	
+			});
+
+		case ADD_NODE_FEEDBACK:
+			return Object.assign({}, state, {
+				error: {},
+				feedback_node_modal: false,
+			});
 
 		case REMOVE_NODE_SUCCESS:
 			return Object.assign({}, state, {
@@ -125,7 +144,7 @@ export default function projectReducer(state=initialState, action) {
 		case REMOVE_NODE_FAIL:
 			return Object.assign({}, state, {
 				error: action.payload
-			});	
+			});
 
 		case EDIT_NODE_SUCCESS:
 			return Object.assign({}, state, {
@@ -136,12 +155,13 @@ export default function projectReducer(state=initialState, action) {
 				node_modal: false,
 				stats_modal: false,
 				edit_node_modal: false,
-			});	
+				feedback_node_modal: false,
+			});
 
 		case EDIT_NODE_FAIL:
 			return Object.assign({}, state, {
 				error: action.payload
-			});			 			
+			});
 
 		case SELECT_USER_PROJECT:
 			return Object.assign({}, state, {
@@ -163,6 +183,7 @@ export default function projectReducer(state=initialState, action) {
 				node_detail_modal: false,
 				stats_modal: false,
 				edit_node_modal: false,
+				feedback_node_modal: false,
 			})
 
 		case DESELECT_PROJECT_MODAL:
@@ -178,12 +199,13 @@ export default function projectReducer(state=initialState, action) {
 				node_detail_modal: false,
 				stats_modal: false,
 				edit_node_modal: false,
+				feedback_node_modal: false,
 			})
 
 		case DESELECT_USER_PROJECT_MODAL:
 			return Object.assign({}, state, {
 				user_modal: false
-			})						
+			})
 
 		case SELECT_NODE_PROJECT_MODAL:
 			return Object.assign({}, state, {
@@ -193,6 +215,7 @@ export default function projectReducer(state=initialState, action) {
 				node_detail_modal: false,
 				stats_modal: false,
 				edit_node_modal: false,
+				feedback_node_modal: false,
 			})
 
 		case DESELECT_NODE_PROJECT_MODAL:
@@ -208,6 +231,7 @@ export default function projectReducer(state=initialState, action) {
 				node_detail_modal: true,
 				stats_modal: false,
 				edit_node_modal: false,
+				feedback_node_modal: false,
 				selectedNode: action.payload
 			})
 
@@ -225,6 +249,7 @@ export default function projectReducer(state=initialState, action) {
 				node_detail_modal: false,
 				stats_modal: false,
 				edit_node_modal: true,
+				feedback_node_modal: false,
 				selectedNode: action.payload
 			})
 
@@ -243,17 +268,36 @@ export default function projectReducer(state=initialState, action) {
 				node_detail_modal: false,
 				stats_modal: true,
 				edit_node_modal: false,
-			})			
+				feedback_node_modal: false,
+			})
 
 		case DESELECT_STATS_MODAL:
 			return Object.assign({}, state, {
 				stats_modal: false
-			})		
+			})
+
+		case SELECT_FEEDBACK_NODE_MODAL:
+			return Object.assign({}, state, {
+				project_modal: false,
+				user_modal: false,
+				node_modal: false,
+				node_detail_modal: false,
+				stats_modal: false,
+				edit_node_modal: false,
+				feedback_node_modal: true,
+				selectedNode_id: action.payload,
+			})
+
+		case DESELECT_FEEDBACK_NODE_MODAL:
+			return Object.assign({}, state, {
+				feedback_node_modal: false,
+				selectedNode_id: '',
+			})
 
 		case SELECT_TREE_DATA:
 			return Object.assign({}, state, {
 				treeData: action.payload
-			})						
+			})
 
 		case RESET_UPDATE_STATE:
 			return Object.assign({}, state, {
@@ -265,6 +309,8 @@ export default function projectReducer(state=initialState, action) {
 				node_modal: false,
 				stats_modal: false,
 				edit_node_modal: false,
+				feedback_node_modal: false,
+				selectedNode_id: '',
 			});
 
 		case RESET_PROJECT_STATE:
@@ -275,7 +321,7 @@ export default function projectReducer(state=initialState, action) {
 				isUpdated: false,
 				isProjectSelected: false,
 				selectedProject_id: '',
-				selectedProject_title: '', 
+				selectedProject_title: '',
 				project_users: [],
 				project_modal: false,
 				user_modal: false,
@@ -283,9 +329,12 @@ export default function projectReducer(state=initialState, action) {
 				node_detail_modal: false,
 				stats_modal: false,
 				edit_node_modal: false,
+				feedback_node_modal: false,
 				selectedNode: {},
+				selectedNode_id: '',
 				treeData: [],
-			});					
+				node_feedbacks: [],
+			});
 
 		default:
 			return state;

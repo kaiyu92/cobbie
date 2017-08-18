@@ -2,6 +2,7 @@ var express = require('express');
 var User = require('../models/User');
 var Node = require('../models/Node');
 var Project = require('../models/Project');
+var Feedback = require('../models/Feedback');
 
 //Password hashing
 var passwordHash = require('password-hash');
@@ -139,7 +140,7 @@ router.route('/addProject').post(function(req, res){
 			})
 			//res.send(err);
 		else
-			res.json({ 
+			res.json({
 				status: 'success',
 				message: 'Successfully added a new project',
 				id: result._id
@@ -168,7 +169,7 @@ router.route('/projects/:user').get(function(req, res) {
 // Update project title, desc, deadline....
 //PUT update project (using PUT at http://localhost:3001/updateProject/:project_id)
 router.route('/updateProject/:project_id').put(function(req, res) {
-	Project.findByIdAndUpdate(req.params.project_id, 
+	Project.findByIdAndUpdate(req.params.project_id,
 							{ $set: { title: req.body.title,
 									  desc: req.body.desc,
 									  deadline: req.body.deadline }},
@@ -182,7 +183,7 @@ router.route('/updateProject/:project_id').put(function(req, res) {
 //Add more user to the project ...
 //PUT update project (using PUT at http://localhost:3001/addUserProject/:project_id)
 router.route('/addUserProject/:project_id').put(function(req, res) {
-	Project.findByIdAndUpdate(req.params.project_id, 
+	Project.findByIdAndUpdate(req.params.project_id,
 							{ $push: { users: req.body.user }},
 							{ new: true }, function(err, project) {
 								if(err)
@@ -192,7 +193,7 @@ router.route('/addUserProject/:project_id').put(function(req, res) {
 									})
 									//res.send(err);
 								else
-									res.json({ 
+									res.json({
 										status: 'success',
 										message: 'Successfully added this user to this project'
 									})
@@ -202,7 +203,7 @@ router.route('/addUserProject/:project_id').put(function(req, res) {
 //Add more node to the project ...
 //PUT update project (using PUT at http://localhost:3001/addUserProject/:project_id)
 router.route('/addNodeProject/:project_id').put(function(req, res) {
-	Project.findByIdAndUpdate(req.params.project_id, 
+	Project.findByIdAndUpdate(req.params.project_id,
 							{ $push: { nodes: req.body.node_id }},
 							{ new: true }, function(err, project) {
 								if(err)
@@ -212,7 +213,7 @@ router.route('/addNodeProject/:project_id').put(function(req, res) {
 									})
 									//res.send(err);
 								else
-									res.json({ 
+									res.json({
 										status: 'success',
 										message: 'Successfully added this node to this project'
 									})
@@ -230,10 +231,10 @@ router.route('/addNode').post(function(req, res){
 	newNode.title = req.body.title;
 	newNode.desc = req.body.desc;
 	newNode.created_by = req.body.created_by;
-	newNode.primaryNode = req.body.primaryNode; 
+	newNode.primaryNode = req.body.primaryNode;
 	newNode.previousNode = req.body.previousNode;
-	newNode.likes = req.body.likes; 
-	newNode.project_id = req.body.project_id; 
+	newNode.likes = req.body.likes;
+	newNode.project_id = req.body.project_id;
 
 	newNode.save(function(err, result) {
 		if(err)
@@ -243,7 +244,7 @@ router.route('/addNode').post(function(req, res){
 			})
 			//res.send(err);
 		else
-			res.json({ 
+			res.json({
 				status: 'success',
 				message: 'Successfully created a new node',
 				node: result
@@ -260,7 +261,7 @@ router.route('/removeNode/:node_id').delete(function(req, res) {
 				message: 'Sorry, unable to remove this node'
 			})
 		else
-			res.json({ 
+			res.json({
 				status: 'success',
 				message: 'Successfully removed this node'
 			})
@@ -269,7 +270,7 @@ router.route('/removeNode/:node_id').delete(function(req, res) {
 
 //UPDATE an existing node (using PUT at http://localhost:3001/updateNode/:node_id)
 router.route('/updateNode/:node_id').put(function(req, res) {
-	Node.findByIdAndUpdate(req.params.node_id, 
+	Node.findByIdAndUpdate(req.params.node_id,
 							{ $set: { previousNode: req.body.previousNode,
 									  desc: req.body.desc,
 									  title: req.body.title
@@ -283,7 +284,7 @@ router.route('/updateNode/:node_id').put(function(req, res) {
 									})
 									//res.send(err);
 								else
-									res.json({ 
+									res.json({
 										status: 'success',
 										message: 'Successfully updated this node'
 									})
@@ -293,7 +294,7 @@ router.route('/updateNode/:node_id').put(function(req, res) {
 //Add like to the node ...
 //PUT update node (using PUT at http://localhost:3001/addLike/:node_id/users/:user)
 router.route('/addLike/:node_id/users/:user').put(function(req, res) {
-	Node.findByIdAndUpdate(req.params.node_id, 
+	Node.findByIdAndUpdate(req.params.node_id,
 							{ $push: { likes: req.params.user }},
 							{ new: true }, function(err, node_like) {
 								if(err)
@@ -303,7 +304,7 @@ router.route('/addLike/:node_id/users/:user').put(function(req, res) {
 									})
 									//res.send(err);
 								else
-									res.json({ 
+									res.json({
 										status: 'success',
 										message: 'Successfully added like to this node'
 									})
@@ -313,7 +314,7 @@ router.route('/addLike/:node_id/users/:user').put(function(req, res) {
 //Remove like to the node ...
 //PUT update node (using PUT at http://localhost:3001/removeLike/:node_id/users/:user)
 router.route('/removeLike/:node_id/users/:user').put(function(req, res) {
-	Node.findByIdAndUpdate(req.params.node_id, 
+	Node.findByIdAndUpdate(req.params.node_id,
 							{ $pull: { likes: req.params.user }},
 							{ new: true }, function(err, node_like) {
 								if(err)
@@ -323,7 +324,7 @@ router.route('/removeLike/:node_id/users/:user').put(function(req, res) {
 									})
 									//res.send(err);
 								else
-									res.json({ 
+									res.json({
 										status: 'success',
 										message: 'Successfully removed like to this node'
 									})
@@ -350,13 +351,49 @@ router.route('/nodes/:project_id').get(function(req, res) {
 
 //=================================================================================
 
+//=======================Feedback===========================================
+//Add comment to the node ...
+//POST add comment (using PUT at http://localhost:3001/addFeedback/:node_id/users/:user)
+router.route('/addFeedback/:node_id/users/:user').post(function(req, res) {
+	var newFeedback = new Feedback();
+
+	newFeedback.comment = req.body.comment;
+	newFeedback.author = req.params.user;
+	newFeedback.node_id = req.params.node_id;
+
+	newFeedback.save(function(err, result) {
+		if(err)
+			res.json({
+				status: 'fail',
+				message: 'Sorry, unable to add new comment'
+			})
+			//res.send(err);
+		else
+			res.json({
+				status: 'success',
+				message: 'Successfully added a new comment',
+			})
+	});
+});
+
+//GET all feedbacks attached to the desired node (using GET at http://localhost:3001/feedbacks/:node_id)
+router.route('/feedbacks/:node_id').get(function(req, res) {
+	Feedback.find({ node_id: req.params.node_id }, function(err, feedbacks) {
+		if(err)
+			res.send(err);
+		res.json(feedbacks);
+	});
+});
+
+//=================================================================================
+
 module.exports = router;
 
 function dateDisplayed(timestamp) {
 	var date = new Date(timestamp);
-	return (date.getMonth() + 1 + '/' + date.getDate() + '/' 
+	return (date.getMonth() + 1 + '/' + date.getDate() + '/'
 			+ date.getFullYear() + " "
-			+ date.getHours() + ":" 
+			+ date.getHours() + ":"
 			+ date.getMinutes() + ":"
 			+ date.getSeconds());
 }

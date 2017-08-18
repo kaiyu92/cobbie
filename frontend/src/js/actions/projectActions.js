@@ -54,6 +54,13 @@ export const DESELECT_EDIT_NODE_MODAL = 'DESELECT_EDIT_NODE_MODAL';
 export const ADD_NODE_LIKE = 'ADD_NODE_LIKE';
 export const REMOVE_NODE_LIKE = 'REMOVE_NODE_LIKE';
 
+export const ADD_NODE_FEEDBACK = 'ADD_NODE_FEEDBACK';
+
+export const FETCH_NODE_FEEDBACK = 'FETCH_NODE_FEEDBACK';
+
+export const SELECT_FEEDBACK_NODE_MODAL = 'SELECT_FEEDBACK_NODE_MODAL';
+export const DESELECT_FEEDBACK_NODE_MODAL = 'DESELECT_FEEDBACK_NODE_MODAL';
+
 export const SELECT_TREE_DATA = 'SELECT_TREE_DATA';
 
 //Fetching project process
@@ -112,11 +119,11 @@ export function addNewProject(proj_title, proj_desc, deadlineDate, user,
 					title: proj_title,
 					desc: proj_desc,
 					deadline: deadlineDate,
-					users: [user]			
+					users: [user]
 				})
 				.end(function(err, res){
 					if(res.body.status === 'success')
-						dispatch(addNewNode(null, node_title, node_desc, user, 1, 
+						dispatch(addNewNode(null, node_title, node_desc, user, 1,
 											null, res.body.id));
 					else
 						dispatch(addProjectFailure(res.body.message));
@@ -137,11 +144,11 @@ export function addUserProject(projects, project_id, targerUser, username) {
 	return dispatch => {
 		return Request.put(ROOT_URL + '/addUserProject/' + project_id)
 				.send({
-					user: targerUser			
+					user: targerUser
 				})
 				.end(function(err, res){
 					if(res.body.status === 'success') {
-						
+
 						for(let i = 0; i < projects.length; i++)
 						{
 						    if(projects[i]._id === project_id)
@@ -149,7 +156,7 @@ export function addUserProject(projects, project_id, targerUser, username) {
 						    	projects[i].users.push(targerUser);
 						    	dispatch(updateUserProjectSuccess(projects[i].users));
 						    }
-						}							
+						}
 					}
 					else
 						dispatch(updateProjectFailure(res.body.message));
@@ -162,7 +169,7 @@ export function addNodeProject(nodes, project_id, node, user) {
 	return dispatch => {
 		return Request.put(ROOT_URL + '/addNodeProject/' + project_id)
 				.send({
-					node_id: node._id			
+					node_id: node._id
 				})
 				.end(function(err, res){
 					if(res.body.status === 'success')
@@ -174,7 +181,7 @@ export function addNodeProject(nodes, project_id, node, user) {
 						}
 						else {
 							nodes.push(node);
-							dispatch(updateNodeProjectSuccess(nodes));								
+							dispatch(updateNodeProjectSuccess(nodes));
 						}
 
 					}
@@ -223,9 +230,9 @@ export function addNewNode(nodes, node_title, node_desc,
 			primaryNode: primNode,
 			previousNode: prevNode,
 			likes: [],
-			project_id: proj_id			
+			project_id: proj_id
 		});
-	
+
 
 	return dispatch => {
 		return Request.post(ROOT_URL + '/addNode')
@@ -262,7 +269,7 @@ export function removeNode(node_id) {
 					else
 						dispatch(removeNodeFailure(res.body.message));
 				});
-	}	
+	}
 }
 
 export function removeNodeSuccess(msg) {
@@ -280,7 +287,7 @@ export function editNode(node, user) {
 				.send({
 					title: node.title,
 					desc: node.desc,
-					previousNode: node.previousNode		
+					previousNode: node.previousNode
 				})
 				.end(function(err, res){
 					if(res.body.status === 'success')
@@ -305,7 +312,7 @@ export function selectUserProject(projects, project_id)
 	{
 	    if(projects[i]._id === project_id)
 	    	return { type: SELECT_USER_PROJECT, payload: projects[i].users }
-	}	
+	}
 }
 
 //ADD PROJECT MODAL
@@ -366,16 +373,16 @@ export function selectTreeData(nodes)
 		{
 			const displayDate = new Date(node.created_at);
 			if(node.likes.length === 0)
-				node.subtitle = "Created by " + node.created_by + " at " + 
-								displayDate.getDate() + "/" + 
+				node.subtitle = "Created by " + node.created_by + " at " +
+								displayDate.getDate() + "/" +
 								(displayDate.getMonth() + 1) + "/" +
 								displayDate.getFullYear();
 			else
-				node.subtitle = "Created by " + node.created_by + " at " + 
-								displayDate.getDate() + "/" + 
+				node.subtitle = "Created by " + node.created_by + " at " +
+								displayDate.getDate() + "/" +
 								(displayDate.getMonth() + 1) + "/" +
 								displayDate.getFullYear() + " (" +
-								node.likes.length + " likes)";				
+								node.likes.length + " likes)";
 
 			nodes[map[node.previousNode]].children.push(node);
 		}
@@ -405,7 +412,7 @@ export function addNodeLike(node_id, username, project_id) {
 					// else
 					// 	dispatch(updateProjectFailure(res.body.message));
 				});
-	}	
+	}
 }
 
 export function removeNodeLike(node_id, username, project_id) {
@@ -421,6 +428,44 @@ export function removeNodeLike(node_id, username, project_id) {
 	}
 }
 
+//Add feedback to the node
+export function addNodeFeedback(node_id, username, comment) {
+	return dispatch => {
+		return Request.post(ROOT_URL + '/addFeedback/' + node_id + '/users/' + username)
+				.send({ comment: comment })
+				.end(function(err, res){
+					if(res.body.status === 'success') {
+						dispatch(addFeedbackSuccess());
+					}
+					// else
+					// 	dispatch(updateProjectFailure(res.body.message));
+				});
+	}
+}
+
+export function addFeedbackSuccess() {
+	return { type: ADD_NODE_FEEDBACK }
+}
+
+//Fetching node process
+export function fetchNodeFeedback(node_id) {
+	return dispatch => {
+		return Request
+			.get(ROOT_URL + '/feedbacks/' + node_id)
+			.end(function(err,res) {
+				if(err) { }
+				else
+				{
+					dispatch(fetchFeedbackSuccess(res.body));
+				}
+			})
+	}
+}
+
+export function fetchFeedbackSuccess(feedbacks) {
+	return { type: FETCH_NODE_FEEDBACK, payload: feedbacks }
+}
+
 //STATS INFORMATION MODAL
 export function selectStatsDetail() {
 	return { type: SELECT_STATS_MODAL }
@@ -428,6 +473,15 @@ export function selectStatsDetail() {
 
 export function deselectStatsDetail(){
 	return { type: DESELECT_STATS_MODAL }
+}
+
+//FEEDBACK MODAL
+export function selectFeedbackNode(node_id) {
+	return { type: SELECT_FEEDBACK_NODE_MODAL, payload: node_id }
+}
+
+export function deselectFeedbackNode(){
+	return { type: DESELECT_FEEDBACK_NODE_MODAL }
 }
 
 export function resetUpdateState() {
