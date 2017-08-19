@@ -7062,6 +7062,12 @@ label {
   border-width: 0 1px 4px 1px;
 }
 
+.scrollable-menu {
+    height: auto;
+    max-height: 125px;
+    overflow-x: hidden;
+}
+
 *{
   font-family: sans-serif;
 }
