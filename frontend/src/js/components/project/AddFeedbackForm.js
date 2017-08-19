@@ -48,7 +48,7 @@ class AddFeedbackForm extends React.Component {
 				<div>
 					<TextFormField
 						name="comment"
-						floatingLabelText="Description"
+						floatingLabelText="Write a comment..."
 						multiLine={true}/>
 				</div>
 				<div>
