@@ -76,7 +76,7 @@ class NodeDetailPanel extends React.Component {
 						  <li class="list-group-item">
 						  	<h4 class="list-group-item-heading">{selectedNode.likes.length} likes</h4>
 						  	<div class="list-group-item-text">
-						  		<ul class ="list-group">
+						  		<ul class ="list-group scrollable-menu">
 						        {
 						          	selectedNode.likes.map(function(user_like){
 						          			return <li key={ user_like } class="list-group-item">
@@ -90,7 +90,7 @@ class NodeDetailPanel extends React.Component {
 							<li class="list-group-item">
 						  	<h4 class="list-group-item-heading">Feedbacks</h4>
 						  	<div class="list-group-item-text">
-						  		<ul class ="list-group">
+						  		<ul class ="list-group scrollable-menu">
 						        {
 						          	node_feedbacks.map(function(feedback){
 						          			return <li key={ feedback._id } class="list-group-item">
